@@ -6,40 +6,909 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#1B5E20">
+  <meta name="description" content="AI-Powered Plant Health Assistant for Eritrean Farmers.">
   <title>ጽቡቕ ተኽሊ | Tsibuk Teklil</title>
-  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/react.min.js"></script>
-  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/react-dom.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
+
     body {
       margin: 0;
       background: #F0F7F0;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-        sans-serif;
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    #root {
+      max-width: 430px;
+      margin: 0 auto;
+      background: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+
+    /* HEADER */
+    .header {
+      background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
+      color: white;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .header-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .lang-toggle {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.4);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .lang-toggle:active {
+      background: rgba(255,255,255,0.3);
+    }
+
+    /* SCREEN CONTAINER */
+    .screen-container {
+      flex: 1;
+      overflow-y: auto;
+      padding-bottom: 70px;
+      scroll-behavior: smooth;
+    }
+
+    .screen-content {
+      padding: 16px;
+    }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      max-width: 430px;
+      margin: 0 auto;
+      background: white;
+      border-top: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      height: 70px;
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+      z-index: 50;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      flex: 1;
+      padding: 8px 0;
+      border-radius: 8px;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .nav-item:active {
+      background: #f0f7f0;
+    }
+
+    .nav-item.active {
+      color: #1B5E20;
+    }
+
+    .nav-item.active .nav-icon {
+      transform: scale(1.2);
+    }
+
+    .nav-icon {
+      font-size: 24px;
+      transition: transform 0.2s;
+    }
+
+    .nav-label {
+      font-size: 11px;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .nav-center {
+      width: 56px;
+      height: 56px;
+      margin-top: -28px;
+      background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
+      border-radius: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 28px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(27, 94, 32, 0.3);
+      transition: transform 0.2s;
+    }
+
+    .nav-center:active {
+      transform: scale(0.95);
+    }
+
+    /* HOME SCREEN */
+    .hero-card {
+      background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
+      border-radius: 20px;
+      padding: 24px;
+      color: white;
+      text-align: center;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 16px rgba(27, 94, 32, 0.2);
+    }
+
+    .hero-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .hero-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .hero-subtitle {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-bottom: 20px;
+    }
+
+    .scan-button {
+      background: white;
+      color: #1B5E20;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      transition: transform 0.2s;
+      display: inline-block;
+    }
+
+    .scan-button:active {
+      transform: scale(0.95);
+    }
+
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .action-tile {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .action-tile:active {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .action-icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    .action-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #333;
+    }
+
+    .crops-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .crop-item {
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 12px 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .crop-item:active {
+      transform: scale(0.95);
+    }
+
+    .crop-icon {
+      font-size: 28px;
+      margin-bottom: 4px;
+    }
+
+    .crop-name {
+      font-size: 10px;
+      color: #666;
+      line-height: 1.3;
+    }
+
+    .offline-banner {
+      background: #c8e6c9;
+      border-left: 4px solid #1B5E20;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      color: #2e5f35;
+      margin-bottom: 20px;
+    }
+
+    /* SCANNING OVERLAY */
+    .scan-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.95);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      color: white;
+    }
+
+    .viewfinder {
+      width: 240px;
+      height: 240px;
+      border: 3px solid #1B5E20;
+      border-radius: 12px;
+      position: relative;
+      background: rgba(27, 94, 32, 0.1);
+      margin-bottom: 40px;
+    }
+
+    .scan-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #1B5E20;
+      box-shadow: 0 0 10px #1B5E20;
+      animation: scan-move 2s infinite;
+    }
+
+    @keyframes scan-move {
+      0% { top: 0; }
+      100% { top: 240px; }
+    }
+
+    .scan-progress {
+      text-align: center;
+    }
+
+    .scan-percentage {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .scan-text {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    /* DIAGNOSIS SCREEN */
+    .diagnosis-container {
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+    }
+
+    .diagnosis-icon {
+      font-size: 64px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .diagnosis-title {
+      font-size: 20px;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 4px;
+      color: #333;
+    }
+
+    .diagnosis-title-en {
+      font-size: 14px;
+      text-align: center;
+      color: #999;
+      margin-bottom: 16px;
+    }
+
+    .severity-badge {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .confidence-bar {
+      background: #e0e0e0;
+      height: 8px;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .confidence-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4CAF50 0%, #1B5E20 100%);
+      transition: width 0.3s;
+    }
+
+    .section-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #1B5E20;
+      text-transform: uppercase;
+      margin-top: 16px;
+      margin-bottom: 8px;
+    }
+
+    .section-content {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #555;
+      margin-bottom: 12px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: #1B5E20;
+      color: white;
+    }
+
+    .btn-primary:active {
+      background: #164620;
+    }
+
+    .btn-secondary {
+      background: #f0f7f0;
+      color: #1B5E20;
+      border: 1px solid #1B5E20;
+    }
+
+    .btn-secondary:active {
+      background: #e8f5e9;
+    }
+
+    /* CHAT SCREEN */
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .chat-message {
+      display: flex;
+      gap: 8px;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message-user {
+      justify-content: flex-end;
+    }
+
+    .message-bubble {
+      max-width: 70%;
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+
+    .bubble-user {
+      background: #1B5E20;
+      color: white;
+    }
+
+    .bubble-assistant {
+      background: #f0f7f0;
+      color: #333;
+      border: 1px solid #e0e0e0;
+    }
+
+    .chat-input-area {
+      padding: 12px 16px;
+      border-top: 1px solid #e0e0e0;
+      display: flex;
+      gap: 8px;
+    }
+
+    .chat-input {
+      flex: 1;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .chat-input:focus {
+      border-color: #1B5E20;
+    }
+
+    .chat-send {
+      background: #1B5E20;
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .chat-send:active {
+      background: #164620;
+    }
+
+    /* GARDEN SCREEN */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      border: 1px solid #1B5E20;
+    }
+
+    .stat-number {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1B5E20;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #2e5f35;
+      font-weight: 500;
+    }
+
+    .health-section {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    .health-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 12px;
+    }
+
+    .health-bar-bg {
+      background: #e0e0e0;
+      height: 12px;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .health-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #1B5E20 0%, #4CAF50 100%);
+      transition: width 0.3s;
+    }
+
+    .health-text {
+      font-size: 12px;
+      color: #666;
+      text-align: right;
+    }
+
+    .plant-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .plant-item {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .plant-item:active {
+      background: #f9f9f9;
+      transform: translateX(4px);
+    }
+
+    .plant-icon {
+      font-size: 32px;
+    }
+
+    .plant-info {
+      flex: 1;
+    }
+
+    .plant-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 4px;
+    }
+
+    .plant-status {
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      width: fit-content;
+      font-weight: 500;
+    }
+
+    .status-treating {
+      background: #fff3e0;
+      color: #e65100;
+    }
+
+    .status-recovered {
+      background: #e8f5e9;
+      color: #1B5E20;
+    }
+
+    /* PLANTS SCREEN */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #999;
+    }
+
+    .empty-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .empty-text {
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    /* PLANT DETAIL SCREEN */
+    .detail-header {
+      background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .detail-icon {
+      font-size: 56px;
+      margin-bottom: 8px;
+    }
+
+    .detail-name {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .detail-subtitle {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .timeline-item {
+      display: flex;
+      gap: 12px;
+    }
+
+    .timeline-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #1B5E20;
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+
+    .timeline-content {
+      flex: 1;
+    }
+
+    .timeline-date {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 2px;
+    }
+
+    .timeline-text {
+      font-size: 13px;
+      color: #333;
+    }
+
+    .note-input-area {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .note-input {
+      flex: 1;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+    }
+
+    .note-input:focus {
+      border-color: #1B5E20;
+    }
+
+    .note-btn {
+      background: #1B5E20;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .note-btn:active {
+      background: #164620;
+    }
+
+    /* TIPS SCREEN */
+    .season-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: #1B5E20;
+      color: white;
+      border-color: #1B5E20;
+    }
+
+    .season-header {
+      background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
+      color: white;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+
+    .season-name {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .season-months {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    .tips-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .tip-card {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #555;
+    }
+
+    .pro-tip-box {
+      background: linear-gradient(135deg, #fff9c4 0%, #ffe082 100%);
+      border: 2px solid #fbc02d;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 500;
+      color: #f57f17;
+    }
+
+    .pro-tip-icon {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    /* UTILITY CLASSES */
+    .back-button {
+      background: transparent;
+      border: none;
+      color: #1B5E20;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 8px;
+      margin: -8px 0 0 -8px;
+      font-weight: 600;
+    }
+
+    .back-button:active {
+      opacity: 0.7;
+    }
+
+    /* SCROLLBAR */
+    .screen-container::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .screen-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .screen-container::-webkit-scrollbar-thumb {
+      background: #ddd;
+      border-radius: 3px;
+    }
+
+    .chat-messages::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .chat-messages::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb {
+      background: #ddd;
+      border-radius: 2px;
     }
   </style>
 </head>
 <body>
   <div id="root"></div>
 
-  <script type="text/babel">
-    const { useState, useEffect, useRef, useCallback } = React;
-
+  <script>
     // ============================================================
     // ጽቡቕ ተኽሊ — Tsibuk Teklil — Healthy Plant
     // AI-Powered Plant Health Assistant for Eritrean Farmers
-    // Powered by Gemma 4 (Simulated Prototype)
     // ============================================================
 
-    // --- ERITREAN CROP & DISEASE DATABASE ---
+    // DATA
     const CROPS = {
       sorghum: { nameEn: "Sorghum", nameTi: "ምሸላ", icon: "🌾", color: "#D4A843" },
       teff: { nameEn: "Teff", nameTi: "ጣፍ", icon: "🌿", color: "#8B7355" },
@@ -140,7 +1009,6 @@
       },
     ];
 
-    // --- SEASONAL TIPS ---
     const SEASONAL_TIPS = {
       kremti: {
         nameTi: "ክረምቲ", nameEn: "Kremti (Main Rainy Season)",
@@ -174,50 +1042,6 @@
       },
     };
 
-    // --- CONVERSATION ENGINE (Simulated Gemma 4) ---
-    const generateResponse = (userMessage, context) => {
-      const msg = userMessage.toLowerCase();
-      const { currentDisease, currentCrop, lang } = context;
-      const isTi = lang === "ti";
-
-      if (msg.includes("water") || msg.includes("ማይ")) {
-        return isTi
-          ? "ማይ ኣብ ጽቡቕ ግዜ ምፍሳስ ኣገዳሲ እዩ። ንግሆ ቀልጢፍካ ወይ ምሸት ድሕሪ ጸሓይ ምዕራብ ኣፍስስ። ኣብ ሱር ኣታኽልቲ ጥራይ ኣፍስስ፡ ቈጽሊ ከይጠልቅ። ሓደ ጊዜ ኣብ ሰሙን ብዙሕ ማይ ምፍሳስ ካብ ነኣሽቱ ማይ ኩሉ ግዜ ይሓይሽ።"
-          : "Watering at the right time is crucial. Water early morning or after sunset. Always water at the base of the plant, not on the leaves. One deep watering per week is better than frequent shallow watering — it encourages deeper root growth which makes your plants more drought-resistant.";
-      }
-      if (msg.includes("prevent") || msg.includes("ምክልኻል") || msg.includes("protect")) {
-        return isTi
-          ? `ን${currentCrop?.nameTi || "ኣታኽልቲ"} ንምሕላው: ዝራእቲ ቀይር ኣብ ነፍሲ ወከፍ ወቕቲ። ተጻወርቲ ዓይነት ተጠቐም። ኣብ መንጎ ኣታኽልቲ ቦታ ግበር ንኣየር። መሬት ኣይትረስዖ — ድዅዒ ወይ ብርባ ተሓንጢ ወስኽ።`
-          : `To protect your ${currentCrop?.nameEn || "plants"}: Rotate crops each season — never plant the same family in the same spot twice in a row. Use resistant varieties when available from your local agricultural office. Proper spacing is essential for air circulation, which prevents most fungal diseases. And don't neglect your soil — healthy soil grows healthy plants.`;
-      }
-      if (msg.includes("spread") || msg.includes("ምልሕላፍ") || msg.includes("neighbor") || msg.includes("other plant")) {
-        return isTi
-          ? "ሕማም ናብ ካልእ ኣታኽልቲ ከይላባዕ: ዝተጠቕዑ ኣታኽልቲ ሽዑ ኣልዕል። ናውቲ ድሕሪ ምጥቃም ብፈላ ማይ ኣጽሪ። ብዝተጠቕዑ ኣታኽልቲ ምስ ተንከፍካ ንጥዕና ኣታኽልቲ ኣይትትንክፍ።"
-          : "To prevent spreading to other plants: Remove affected plants immediately. Clean your tools with boiling water or fire between plants. Don't touch healthy plants after handling infected ones. If the disease is soil-borne, avoid moving soil from the infected area. Warn your neighbors if you see a serious disease — it can spread between farms through water and wind.";
-      }
-      if (msg.includes("when") || msg.includes("ማዓስ") || msg.includes("how long") || msg.includes("time")) {
-        return isTi
-          ? "ምሕዋይ ግዜ ይወስድ። ብዘይ ሕክምና 2-3 ሰሙን ክጠፍእ ይኽእል። ሕክምና እንተ ጀሚርካ 1-2 ሰሙን ውሽጢ ለውጢ ክትርኢ ኣለካ። ለውጢ እንተ ዘይረአኻ ካልእ ሜላ ፈትን ወይ ናብ ቤት ጽሕፈት ሕርሻ ኪድ።"
-          : "Recovery depends on how early you caught the problem. With proper treatment, you should see improvement within 1-2 weeks. If there's no change after 2 weeks, the disease may have progressed too far for that plant — but the treatment will still protect neighboring plants. Keep monitoring and taking photos so we can track the progress together.";
-      }
-      if (msg.includes("soil") || msg.includes("መሬት") || msg.includes("dirt") || msg.includes("ground")) {
-        return isTi
-          ? "ጥዕና መሬት ኣዝዩ ኣገዳሲ እዩ። ድዅዒ ወይ ብርባ ተሓንጢ ወስኽ ንመሬት ምስባሕ። ዝራእቲ ቀይር ኣብ ነፍሲ ወከፍ ወቕቲ። ባልዶንጓ ወይ ኣተር ምስ ካልእ ዝራእቲ ምዝራእ ንመሬት ይሕግዝ።"
-          : "Soil health is the foundation of everything. Add compost or aged manure to build organic matter. Rotate crops every season — legumes like lentils and cowpeas fix nitrogen and improve soil for the next crop. If your soil is heavy clay, add sand and organic matter. If it's too sandy, add more compost. Healthy soil means fewer diseases and stronger plants.";
-      }
-
-      // Default contextual response
-      if (currentDisease) {
-        return isTi
-          ? `ብዛዕባ ${currentDisease.nameTi} ዝያዳ ክሕግዘካ ይኽእል። ብዛዕባ ሕክምና፡ ምክልኻል፡ ወይ ካልእ ሕቶ ሕተተኒ። ስእሊ ናይ ኣታኽልትኻ ድሕሪ ሕክምና ስደደለይ ምዕባለ ክንከታተል።`
-          : `I can help you more with ${currentDisease.nameEn}. Ask me about treatment details, prevention for next season, whether it can spread, or anything else. You can also send me a follow-up photo after treatment so we can track your plant's recovery together.`;
-      }
-      return isTi
-        ? "ስእሊ ናይ ኣታኽልትኻ ስደድ ወይ ብዛዕባ ማይ ምፍሳስ፡ ምክልኻል ሕማም፡ ወይ ጥዕና መሬት ሕተተኒ።"
-        : "Send me a photo of your plant, or ask me about watering, disease prevention, soil health, or any farming question. I'm here to help!";
-    };
-
-    // --- SEVERITY HELPERS ---
     const severityConfig = {
       critical: { color: "#E74C3C", bg: "#FDEDEC", labelEn: "Critical", labelTi: "ኣዝዩ ሓደገኛ", icon: "🔴" },
       high: { color: "#E67E22", bg: "#FEF5E7", labelEn: "High", labelTi: "ልዑል", icon: "🟠" },
@@ -225,1231 +1049,720 @@
       low: { color: "#27AE60", bg: "#EAFAF1", labelEn: "Low", labelTi: "ትሑት", icon: "🟢" },
     };
 
-    // ============================================================
-    // MAIN APP COMPONENT
-    // ============================================================
-    function TsibukTeklil() {
-      const [screen, setScreen] = useState("home");
-      const [lang, setLang] = useState("ti"); // ti = Tigrinya, en = English
-      const [diagnosisResult, setDiagnosisResult] = useState(null);
-      const [isScanning, setIsScanning] = useState(false);
-      const [scanProgress, setScanProgress] = useState(0);
-      const [chatMessages, setChatMessages] = useState([]);
-      const [chatInput, setChatInput] = useState("");
-      const [myPlants, setMyPlants] = useState([]);
-      const [selectedPlant, setSelectedPlant] = useState(null);
-      const [currentSeason, setCurrentSeason] = useState("kremti");
-      const chatEndRef = useRef(null);
-      const fileInputRef = useRef(null);
+    // UTILITIES
+    const t = (ti, en, lang) => lang === "ti" ? ti : en;
 
-      const t = useCallback((ti, en) => (lang === "ti" ? ti : en), [lang]);
+    const generateResponse = (userMessage, context, lang) => {
+      const msg = userMessage.toLowerCase();
+      const { currentDisease, currentCrop } = context;
+      const isTi = lang === "ti";
 
-      useEffect(() => {
-        if (chatEndRef.current) chatEndRef.current.scrollIntoView({ behavior: "smooth" });
-      }, [chatMessages]);
+      if (msg.includes("water") || msg.includes("ማይ")) {
+        return isTi
+          ? "ማይ ኣብ ጽቡቕ ግዜ ምፍሳስ ኣገዳሲ እዩ። ንግሆ ቀልጢፍካ ወይ ምሸት ድሕሪ ጸሓይ ምዕራብ ኣፍስስ። ኣብ ሱር ኣታኽልቲ ጥራይ ኣፍስስ፡ ቈጽሊ ከይጠልቅ። ሓደ ጊዜ ኣብ ሰሙን ብዙሕ ማይ ምፍሳስ ካብ ነኣሽቱ ማይ ኩሉ ግዜ ይሓይሽ።"
+          : "Watering at the right time is crucial. Water early morning or after sunset. Always water at the base of the plant, not on the leaves. One deep watering per week is better than frequent shallow watering.";
+      }
+      if (msg.includes("prevent") || msg.includes("ምክልኻል") || msg.includes("protect")) {
+        return isTi
+          ? `ን${currentCrop?.nameTi || "ኣታኽልቲ"} ንምሕላው: ዝራእቲ ቀይር ኣብ ነፍሲ ወከፍ ወቕቲ። ተጻወርቲ ዓይነት ተጠቐም።`
+          : `To protect your ${currentCrop?.nameEn || "plants"}: Rotate crops each season. Use resistant varieties when available. Proper spacing is essential for air circulation.`;
+      }
+      if (msg.includes("spread") || msg.includes("ምልሕላፍ")) {
+        return isTi
+          ? "ሕማም ናብ ካልእ ኣታኽልቲ ከይላባዕ: ዝተጠቕዑ ኣታኽልቲ ሽዑ ኣልዕል። ናውቲ ድሕሪ ምጥቃም ብፈላ ማይ ኣጽሪ።"
+          : "To prevent spreading: Remove affected plants immediately. Clean your tools with boiling water between plants.";
+      }
+      if (msg.includes("when") || msg.includes("ማዓስ") || msg.includes("time")) {
+        return isTi
+          ? "ምሕዋይ ግዜ ይወስድ። ሕክምና እንተ ጀሚርካ 1-2 ሰሙን ውሽጢ ለውጢ ክትርኢ ኣለካ።"
+          : "Recovery depends on how early you caught the problem. With proper treatment, you should see improvement within 1-2 weeks.";
+      }
+      if (msg.includes("soil") || msg.includes("መሬት")) {
+        return isTi
+          ? "ጥዕና መሬት ኣዝዩ ኣገዳሲ እዩ። ድዅዒ ወይ ብርባ ተሓንጢ ወስኽ ንመሬት ምስባሕ።"
+          : "Soil health is the foundation of everything. Add compost or aged manure to build organic matter.";
+      }
 
-      // Simulate camera scan
-      const handleScan = () => {
-        setIsScanning(true);
-        setScanProgress(0);
-        const interval = setInterval(() => {
-          setScanProgress((p) => {
-            if (p >= 100) {
-              clearInterval(interval);
-              const disease = DISEASES[Math.floor(Math.random() * DISEASES.length)];
-              const crop = CROPS[disease.crop];
-              setDiagnosisResult({ disease, crop });
-              setIsScanning(false);
-              setScreen("diagnosis");
-              setChatMessages([
-                {
-                  role: "assistant",
-                  text: lang === "ti"
-                    ? `ሰላም! ኣብ ${crop.nameTi} ${disease.nameTi} ረኺበ። ብዛዕባ ሕክምና ወይ ምክልኻል ሕተተኒ።`
-                    : `Hello! I've detected ${disease.nameEn} on your ${crop.nameEn}. Ask me anything about treatment or prevention.`,
-                },
-              ]);
-              return 100;
-            }
-            return p + 4;
-          });
-        }, 60);
-      };
+      if (currentDisease) {
+        return isTi
+          ? `ብዛዕባ ${currentDisease.nameTi} ዝያዳ ክሕግዘካ ይኽእል። ሕቶ ሕተተኒ።`
+          : `I can help you more with ${currentDisease.nameEn}. Ask me anything about it.`;
+      }
+      return isTi
+        ? "ስእሊ ናይ ኣታኽልትኻ ስደድ ወይ ሕቶ ሕተተኒ።"
+        : "Send me a photo or ask me about your plants!";
+    };
 
-      const handleSendChat = () => {
-        if (!chatInput.trim()) return;
-        const userMsg = chatInput.trim();
-        setChatInput("");
-        setChatMessages((prev) => [...prev, { role: "user", text: userMsg }]);
-        setTimeout(() => {
-          const response = generateResponse(userMsg, {
-            currentDisease: diagnosisResult?.disease,
-            currentCrop: diagnosisResult?.crop,
-            lang,
-          });
-          setChatMessages((prev) => [...prev, { role: "assistant", text: response }]);
-        }, 800 + Math.random() * 700);
-      };
+    // STATE MANAGEMENT
+    let state = {
+      screen: "home",
+      lang: "ti",
+      diagnosisResult: null,
+      isScanning: false,
+      scanProgress: 0,
+      chatMessages: [
+        {
+          id: 1,
+          type: "assistant",
+          text: t(
+            "ሰላም! ኣታኽልትካ ንምሕላው ኢ ገዲስካ። ስእሊ ይድገፍ ወይ ስኳ ሕተተኒ።",
+            "Hello! I'm here to help protect your crops. Send a photo or ask me anything about plant health.",
+            "ti"
+          ),
+        },
+      ],
+      myPlants: [],
+      selectedPlantId: null,
+      currentSeason: "kremti",
+      nextChatId: 2,
+    };
 
-      const savePlant = () => {
-        if (!diagnosisResult) return;
-        const newPlant = {
-          id: Date.now(),
-          crop: diagnosisResult.crop,
-          disease: diagnosisResult.disease,
-          date: new Date().toLocaleDateString(),
-          status: "treating",
-          notes: [],
-          history: [
-            { date: new Date().toLocaleDateString(), event: lang === "ti" ? "ሕማም ተረኺቡ" : "Disease detected", severity: diagnosisResult.disease.severity },
-          ],
-        };
-        setMyPlants((prev) => [...prev, newPlant]);
-        setScreen("plants");
-      };
+    // RENDER FUNCTION
+    function render() {
+      const app = document.getElementById("root");
+      app.innerHTML = "";
 
-      const addPlantNote = (plantId, note) => {
-        setMyPlants((prev) =>
-          prev.map((p) =>
-            p.id === plantId
-              ? {
-                  ...p,
-                  notes: [...p.notes, { text: note, date: new Date().toLocaleDateString() }],
-                  history: [
-                    ...p.history,
-                    { date: new Date().toLocaleDateString(), event: note, severity: "low" },
-                  ],
-                }
-              : p
-          )
-        );
-      };
+      // Header
+      const header = document.createElement("div");
+      header.className = "header";
+      header.innerHTML = `
+        <div class="header-title">ጽቡቕ ተኽሊ</div>
+        <button class="lang-toggle">${state.lang === "ti" ? "EN" : "ትግርኛ"}</button>
+      `;
+      header.querySelector(".lang-toggle").addEventListener("click", () => {
+        state.lang = state.lang === "ti" ? "en" : "ti";
+        render();
+      });
+      app.appendChild(header);
 
-      const markPlantRecovered = (plantId) => {
-        setMyPlants((prev) =>
-          prev.map((p) =>
-            p.id === plantId
-              ? {
-                  ...p,
-                  status: "recovered",
-                  history: [
-                    ...p.history,
-                    { date: new Date().toLocaleDateString(), event: lang === "ti" ? "ተሓውዩ! 🎉" : "Recovered! 🎉", severity: "low" },
-                  ],
-                }
-              : p
-          )
-        );
-      };
+      // Screen Container
+      const screenContainer = document.createElement("div");
+      screenContainer.className = "screen-container";
+      const content = document.createElement("div");
+      content.className = "screen-content";
 
-      // --- STYLES ---
-      const styles = {
-        app: {
-          maxWidth: 430,
-          margin: "0 auto",
-          minHeight: "100vh",
-          background: "linear-gradient(180deg, #F0F7F0 0%, #E8F5E9 50%, #F5F5F0 100%)",
-          fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif",
-          position: "relative",
-          overflow: "hidden",
-        },
-        header: {
-          background: "linear-gradient(135deg, #1B5E20 0%, #2E7D32 50%, #388E3C 100%)",
-          padding: "16px 20px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          boxShadow: "0 4px 20px rgba(27,94,32,0.3)",
-          position: "sticky",
-          top: 0,
-          zIndex: 100,
-        },
-        headerTitle: {
-          color: "#fff",
-          fontSize: 20,
-          fontWeight: 700,
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-        },
-        headerSub: {
-          color: "rgba(255,255,255,0.8)",
-          fontSize: 11,
-          marginTop: 2,
-        },
-        langToggle: {
-          background: "rgba(255,255,255,0.2)",
-          border: "1px solid rgba(255,255,255,0.3)",
-          borderRadius: 20,
-          padding: "6px 14px",
-          color: "#fff",
-          fontSize: 12,
-          fontWeight: 600,
-          cursor: "pointer",
-          transition: "all 0.2s",
-        },
-        content: {
-          padding: "0 0 100px 0",
-        },
-        nav: {
-          position: "fixed",
-          bottom: 0,
-          left: "50%",
-          transform: "translateX(-50%)",
-          width: "100%",
-          maxWidth: 430,
-          background: "#fff",
-          borderTop: "1px solid #E0E0E0",
-          display: "flex",
-          justifyContent: "space-around",
-          padding: "8px 0 12px",
-          zIndex: 100,
-          boxShadow: "0 -4px 20px rgba(0,0,0,0.08)",
-        },
-        navItem: (active) => ({
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 4,
-          cursor: "pointer",
-          color: active ? "#1B5E20" : "#999",
-          fontSize: 10,
-          fontWeight: active ? 700 : 500,
-          transition: "all 0.2s",
-          padding: "4px 12px",
-        }),
-        navIcon: (active) => ({
-          fontSize: 22,
-          filter: active ? "none" : "grayscale(1)",
-          transition: "all 0.2s",
-        }),
-        // Home screen
-        heroCard: {
-          margin: "20px 16px",
-          background: "linear-gradient(135deg, #1B5E20 0%, #2E7D32 60%, #43A047 100%)",
-          borderRadius: 24,
-          padding: "32px 24px",
-          color: "#fff",
-          textAlign: "center",
-          boxShadow: "0 8px 32px rgba(27,94,32,0.3)",
-          position: "relative",
-          overflow: "hidden",
-        },
-        heroPattern: {
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          opacity: 0.1,
-          backgroundImage: "radial-gradient(circle at 20% 80%, #fff 1px, transparent 1px), radial-gradient(circle at 80% 20%, #fff 1px, transparent 1px)",
-          backgroundSize: "30px 30px",
-        },
-        scanBtn: {
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 10,
-          background: "#fff",
-          color: "#1B5E20",
-          border: "none",
-          borderRadius: 50,
-          padding: "16px 36px",
-          fontSize: 17,
-          fontWeight: 700,
-          cursor: "pointer",
-          marginTop: 20,
-          boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
-          transition: "all 0.3s",
-          position: "relative",
-          zIndex: 1,
-        },
-        quickActions: {
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: 12,
-          padding: "0 16px",
-          marginTop: 20,
-        },
-        quickAction: (color) => ({
-          background: "#fff",
-          borderRadius: 16,
-          padding: "18px 16px",
-          display: "flex",
-          flexDirection: "column",
-          gap: 8,
-          cursor: "pointer",
-          border: `2px solid ${color}20`,
-          transition: "all 0.2s",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-        }),
-        // Scanning overlay
-        scanOverlay: {
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: "rgba(0,0,0,0.9)",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 200,
-        },
-        scanViewfinder: {
-          width: 260,
-          height: 260,
-          border: "3px solid #4CAF50",
-          borderRadius: 24,
-          position: "relative",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          overflow: "hidden",
-        },
-        scanLine: (progress) => ({
-          position: "absolute",
-          left: 0,
-          right: 0,
-          height: 3,
-          background: "linear-gradient(90deg, transparent, #4CAF50, transparent)",
-          top: `${progress}%`,
-          transition: "top 0.1s linear",
-          boxShadow: "0 0 20px #4CAF50",
-        }),
-        // Diagnosis screen
-        diagCard: {
-          margin: "16px",
-          background: "#fff",
-          borderRadius: 20,
-          overflow: "hidden",
-          boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
-        },
-        diagHeader: (color) => ({
-          background: `linear-gradient(135deg, ${color}, ${color}CC)`,
-          padding: "24px 20px",
-          color: "#fff",
-        }),
-        severityBadge: (sev) => ({
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 6,
-          background: severityConfig[sev].bg,
-          color: severityConfig[sev].color,
-          borderRadius: 20,
-          padding: "4px 12px",
-          fontSize: 12,
-          fontWeight: 700,
-        }),
-        confidenceBar: (pct) => ({
-          height: 6,
-          borderRadius: 3,
-          background: "#E0E0E0",
-          position: "relative",
-          overflow: "hidden",
-        }),
-        confidenceFill: (pct) => ({
-          position: "absolute",
-          left: 0,
-          top: 0,
-          bottom: 0,
-          width: `${pct}%`,
-          borderRadius: 3,
-          background: pct > 85 ? "linear-gradient(90deg, #4CAF50, #66BB6A)" : pct > 70 ? "linear-gradient(90deg, #FFC107, #FFD54F)" : "linear-gradient(90deg, #FF5722, #FF8A65)",
-          transition: "width 1s ease-out",
-        }),
-        section: {
-          padding: "16px 20px",
-          borderBottom: "1px solid #F0F0F0",
-        },
-        sectionTitle: {
-          fontSize: 14,
-          fontWeight: 700,
-          color: "#333",
-          marginBottom: 10,
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-        },
-        remedyStep: {
-          fontSize: 14,
-          color: "#555",
-          lineHeight: 1.7,
-          whiteSpace: "pre-line",
-        },
-        // Chat
-        chatContainer: {
-          padding: "12px 16px",
-          maxHeight: 300,
-          overflowY: "auto",
-        },
-        chatBubble: (isUser) => ({
-          maxWidth: "85%",
-          padding: "12px 16px",
-          borderRadius: isUser ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
-          background: isUser ? "linear-gradient(135deg, #1B5E20, #2E7D32)" : "#fff",
-          color: isUser ? "#fff" : "#333",
-          fontSize: 14,
-          lineHeight: 1.6,
-          marginBottom: 10,
-          marginLeft: isUser ? "auto" : 0,
-          marginRight: isUser ? 0 : "auto",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-        }),
-        chatInputWrap: {
-          display: "flex",
-          gap: 8,
-          padding: "12px 16px",
-          background: "#F5F5F5",
-          borderRadius: "0 0 20px 20px",
-        },
-        chatInputField: {
-          flex: 1,
-          border: "2px solid #E0E0E0",
-          borderRadius: 24,
-          padding: "10px 16px",
-          fontSize: 14,
-          outline: "none",
-          transition: "border-color 0.2s",
-          background: "#fff",
-        },
-        chatSendBtn: {
-          background: "linear-gradient(135deg, #1B5E20, #2E7D32)",
-          color: "#fff",
-          border: "none",
-          borderRadius: "50%",
-          width: 42,
-          height: 42,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          cursor: "pointer",
-          fontSize: 18,
-          flexShrink: 0,
-        },
-        // Plant cards
-        plantCard: (status) => ({
-          background: "#fff",
-          borderRadius: 16,
-          padding: 16,
-          margin: "0 16px 12px",
-          boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
-          border: `2px solid ${status === "recovered" ? "#4CAF5040" : status === "treating" ? "#FF980040" : "#E0E0E0"}`,
-          cursor: "pointer",
-          transition: "all 0.2s",
-        }),
-        plantStatus: (status) => ({
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 4,
-          fontSize: 11,
-          fontWeight: 700,
-          padding: "3px 10px",
-          borderRadius: 12,
-          background: status === "recovered" ? "#E8F5E9" : "#FFF3E0",
-          color: status === "recovered" ? "#2E7D32" : "#E65100",
-        }),
-        // Season cards
-        seasonCard: (active) => ({
-          background: active ? "linear-gradient(135deg, #1B5E20, #2E7D32)" : "#fff",
-          color: active ? "#fff" : "#333",
-          borderRadius: 16,
-          padding: "14px 18px",
-          cursor: "pointer",
-          border: active ? "none" : "2px solid #E0E0E0",
-          transition: "all 0.3s",
-          textAlign: "center",
-          minWidth: 100,
-          flexShrink: 0,
-        }),
-        tipCard: {
-          background: "#fff",
-          borderRadius: 14,
-          padding: "14px 16px",
-          marginBottom: 10,
-          boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-          border: "1px solid #E8F5E9",
-          display: "flex",
-          gap: 12,
-          alignItems: "flex-start",
-        },
-        // Buttons
-        primaryBtn: {
-          background: "linear-gradient(135deg, #1B5E20, #2E7D32)",
-          color: "#fff",
-          border: "none",
-          borderRadius: 14,
-          padding: "14px 24px",
-          fontSize: 15,
-          fontWeight: 700,
-          cursor: "pointer",
-          width: "100%",
-          marginTop: 12,
-          boxShadow: "0 4px 16px rgba(27,94,32,0.25)",
-          transition: "all 0.2s",
-        },
-        secondaryBtn: {
-          background: "transparent",
-          color: "#1B5E20",
-          border: "2px solid #1B5E20",
-          borderRadius: 14,
-          padding: "12px 24px",
-          fontSize: 14,
-          fontWeight: 700,
-          cursor: "pointer",
-          width: "100%",
-          marginTop: 8,
-          transition: "all 0.2s",
-        },
-        gemmaTag: {
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 5,
-          background: "rgba(255,255,255,0.2)",
-          borderRadius: 12,
-          padding: "3px 10px",
-          fontSize: 10,
-          color: "rgba(255,255,255,0.9)",
-          marginTop: 8,
-        },
-        cropGrid: {
-          display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
-          gap: 8,
-          padding: "0 16px",
-          marginTop: 16,
-        },
-        cropChip: {
-          background: "#fff",
-          borderRadius: 12,
-          padding: "10px 4px",
-          textAlign: "center",
-          fontSize: 10,
-          fontWeight: 600,
-          color: "#555",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-          cursor: "pointer",
-          transition: "all 0.2s",
-        },
-        emptyState: {
-          textAlign: "center",
-          padding: "48px 32px",
-          color: "#999",
-        },
-        timelineItem: (sev) => ({
-          display: "flex",
-          gap: 12,
-          marginBottom: 16,
-          alignItems: "flex-start",
-        }),
-        timelineDot: (sev) => ({
-          width: 12,
-          height: 12,
-          borderRadius: "50%",
-          background: severityConfig[sev]?.color || "#4CAF50",
-          flexShrink: 0,
-          marginTop: 4,
-        }),
-        backBtn: {
-          background: "none",
-          border: "none",
-          color: "#fff",
-          fontSize: 22,
-          cursor: "pointer",
-          padding: "4px 8px",
-          marginRight: 8,
-        },
-      };
+      if (state.screen === "home") {
+        content.innerHTML = renderHome();
+      } else if (state.screen === "garden") {
+        content.innerHTML = renderGarden();
+      } else if (state.screen === "plants") {
+        content.innerHTML = renderPlants();
+      } else if (state.screen === "plant-detail") {
+        content.innerHTML = renderPlantDetail();
+      } else if (state.screen === "diagnosis") {
+        content.innerHTML = renderDiagnosis();
+      } else if (state.screen === "chat") {
+        content.innerHTML = renderChat();
+      } else if (state.screen === "tips") {
+        content.innerHTML = renderTips();
+      }
 
-      // ============================================================
-      // SCREENS
-      // ============================================================
+      screenContainer.appendChild(content);
+      app.appendChild(screenContainer);
 
-      // --- HOME ---
-      const HomeScreen = () => (
-        <div>
-          <div style={styles.heroCard}>
-            <div style={styles.heroPattern} />
-            <div style={{ position: "relative", zIndex: 1 }}>
-              <div style={{ fontSize: 48, marginBottom: 8 }}>🌱</div>
-              <h2 style={{ fontSize: 22, fontWeight: 800, margin: 0 }}>
-                {t("ኣታኽልትኻ ስኣል", "Scan Your Plant")}
-              </h2>
-              <p style={{ fontSize: 14, opacity: 0.9, margin: "8px 0 0", lineHeight: 1.5 }}>
-                {t(
-                  "ስእሊ ስደድ — AI ሕማም ይፈልጥን መፍትሒ ይህብን",
-                  "Take a photo — AI identifies the disease and gives you the solution"
-                )}
-              </p>
-              <div style={styles.gemmaTag}>
-                <span>⚡</span> Powered by Gemma 4
-              </div>
-              <button style={styles.scanBtn} onClick={handleScan}>
-                📸 {t("ሕጂ ስኣል", "Scan Now")}
-              </button>
-            </div>
-          </div>
-
-          <div style={styles.quickActions}>
-            <div style={styles.quickAction("#4CAF50")} onClick={() => setScreen("garden")}>
-              <span style={{ fontSize: 28 }}>🏡</span>
-              <span style={{ fontWeight: 700, fontSize: 14, color: "#333" }}>
-                {t("ጀርዲነይ", "My Garden")}
-              </span>
-              <span style={{ fontSize: 11, color: "#888" }}>
-                {myPlants.length} {t("ኣታኽልቲ", "plants")}
-              </span>
-            </div>
-            <div style={styles.quickAction("#FF9800")} onClick={() => setScreen("tips")}>
-              <span style={{ fontSize: 28 }}>📅</span>
-              <span style={{ fontWeight: 700, fontSize: 14, color: "#333" }}>
-                {t("ወቕታዊ ምኽሪ", "Seasonal Tips")}
-              </span>
-              <span style={{ fontSize: 11, color: "#888" }}>
-                {t("ክረምቲ ምኽሪ", "Kremti advice")}
-              </span>
-            </div>
-            <div style={styles.quickAction("#2196F3")} onClick={() => setScreen("plants")}>
-              <span style={{ fontSize: 28 }}>📋</span>
-              <span style={{ fontWeight: 700, fontSize: 14, color: "#333" }}>
-                {t("ዝተኸታተሉ", "Tracked Plants")}
-              </span>
-              <span style={{ fontSize: 11, color: "#888" }}>
-                {t("ምዕባለ ተኸታተል", "Monitor progress")}
-              </span>
-            </div>
-            <div style={styles.quickAction("#9C27B0")} onClick={() => { setDiagnosisResult(null); setChatMessages([{role:"assistant", text: t("ሰላም! ብዛዕባ ሕርሻ ወይ ኣታኽልቲ ዝኾነ ሕቶ ሕተተኒ።", "Hello! Ask me anything about farming or plant care.")}]); setScreen("chat"); }}>
-              <span style={{ fontSize: 28 }}>💬</span>
-              <span style={{ fontWeight: 700, fontSize: 14, color: "#333" }}>
-                {t("AI ሓገዝ", "Ask AI")}
-              </span>
-              <span style={{ fontSize: 11, color: "#888" }}>
-                {t("ሕቶ ሕተት", "Get answers")}
-              </span>
-            </div>
-          </div>
-
-          <div style={{ padding: "20px 16px 8px" }}>
-            <h3 style={{ fontSize: 15, fontWeight: 700, color: "#333", margin: "0 0 4px" }}>
-              {t("ዝድገፉ ዝራእቲ", "Supported Crops")}
-            </h3>
-            <p style={{ fontSize: 12, color: "#888", margin: 0 }}>
-              {t("ን14 ዓይነት ዝራእቲ ኤርትራ ዝተፈልጡ ሕማማት", "14 Eritrean crops with known disease profiles")}
-            </p>
-          </div>
-          <div style={styles.cropGrid}>
-            {Object.values(CROPS).map((crop, i) => (
-              <div key={i} style={styles.cropChip}>
-                <div style={{ fontSize: 24, marginBottom: 4 }}>{crop.icon}</div>
-                <div>{lang === "ti" ? crop.nameTi : crop.nameEn}</div>
-              </div>
-            ))}
-          </div>
-
-          <div style={{ padding: "24px 16px 8px" }}>
-            <div style={{
-              background: "linear-gradient(135deg, #E8F5E9, #C8E6C9)",
-              borderRadius: 16,
-              padding: "16px 20px",
-              display: "flex",
-              gap: 12,
-              alignItems: "center",
-            }}>
-              <span style={{ fontSize: 32 }}>📡</span>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#1B5E20" }}>
-                  {t("ኦፍላይን ይሰርሕ", "Works Offline")}
-                </div>
-                <div style={{ fontSize: 11, color: "#2E7D32", lineHeight: 1.4 }}>
-                  {t(
-                    "ኢንተርነት ኣየድልን — ኩሉ ኣብ ተለፎንካ ይሰርሕ",
-                    "No internet needed — everything runs on your phone"
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
+      // Bottom Navigation
+      const nav = document.createElement("div");
+      nav.className = "bottom-nav";
+      nav.innerHTML = `
+        <div class="nav-item ${state.screen === "home" ? "active" : ""}">
+          <div class="nav-icon">🏠</div>
+          <div class="nav-label">${t("መዋዕል", "Home", state.lang)}</div>
         </div>
-      );
-
-      // --- DIAGNOSIS ---
-      const DiagnosisScreen = () => {
-        if (!diagnosisResult) return null;
-        const { disease, crop } = diagnosisResult;
-        const sev = severityConfig[disease.severity];
-
-        return (
-          <div>
-            <div style={styles.diagCard}>
-              <div style={styles.diagHeader(crop.color)}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                  <div>
-                    <span style={{ fontSize: 36 }}>{crop.icon}</span>
-                    <h2 style={{ fontSize: 20, fontWeight: 800, margin: "8px 0 2px" }}>
-                      {lang === "ti" ? disease.nameTi : disease.nameEn}
-                    </h2>
-                    <p style={{ fontSize: 13, opacity: 0.9, margin: 0 }}>
-                      {lang === "ti" ? crop.nameTi : crop.nameEn}
-                    </p>
-                  </div>
-                  <div style={styles.severityBadge(disease.severity)}>
-                    {sev.icon} {lang === "ti" ? sev.labelTi : sev.labelEn}
-                  </div>
-                </div>
-                <div style={{ marginTop: 16 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, marginBottom: 4, opacity: 0.9 }}>
-                    <span>{t("ርግጸኛነት", "Confidence")}</span>
-                    <span>{disease.confidence}%</span>
-                  </div>
-                  <div style={styles.confidenceBar(disease.confidence)}>
-                    <div style={styles.confidenceFill(disease.confidence)} />
-                  </div>
-                </div>
-              </div>
-
-              <div style={styles.section}>
-                <div style={styles.sectionTitle}>
-                  🔍 {t("ምልክታት", "Symptoms")}
-                </div>
-                <p style={{ fontSize: 14, color: "#555", lineHeight: 1.7, margin: 0 }}>
-                  {lang === "ti" ? disease.symptomsTi : disease.symptomsEn}
-                </p>
-              </div>
-
-              <div style={styles.section}>
-                <div style={styles.sectionTitle}>
-                  💊 {t("ሕክምና", "Treatment")}
-                </div>
-                <div style={styles.remedyStep}>
-                  {lang === "ti" ? disease.remedyTi : disease.remedyEn}
-                </div>
-              </div>
-
-              <div style={styles.section}>
-                <div style={styles.sectionTitle}>
-                  🛡️ {t("ምክልኻል", "Prevention")}
-                </div>
-                <p style={{ fontSize: 14, color: "#555", lineHeight: 1.7, margin: 0 }}>
-                  {lang === "ti" ? disease.preventionTi : disease.preventionEn}
-                </p>
-              </div>
-
-              <div style={{ padding: "0 20px 20px" }}>
-                <button style={styles.primaryBtn} onClick={savePlant}>
-                  📌 {t("ኣብ ጀርዲነይ ኣቐምጥ", "Save to My Garden")}
-                </button>
-                <button style={styles.secondaryBtn} onClick={handleScan}>
-                  📸 {t("ካልእ ስእሊ ስኣል", "Scan Another Plant")}
-                </button>
-              </div>
-            </div>
-
-            {/* Chat section */}
-            <div style={{ margin: "0 16px 16px", background: "#fff", borderRadius: 20, overflow: "hidden", boxShadow: "0 4px 24px rgba(0,0,0,0.08)" }}>
-              <div style={{ padding: "14px 20px", borderBottom: "1px solid #F0F0F0", display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ fontSize: 18 }}>🤖</span>
-                <div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: "#333" }}>
-                    {t("ንAI ሕተት", "Ask AI")}
-                  </div>
-                  <div style={{ fontSize: 11, color: "#888" }}>
-                    Gemma 4 · {t("ብዛዕባ ሕማምዚ ሕተት", "Ask about this disease")}
-                  </div>
-                </div>
-              </div>
-              <div style={styles.chatContainer}>
-                {chatMessages.map((msg, i) => (
-                  <div key={i} style={styles.chatBubble(msg.role === "user")}>
-                    {msg.text}
-                  </div>
-                ))}
-                <div ref={chatEndRef} />
-              </div>
-              <div style={styles.chatInputWrap}>
-                <input
-                  style={styles.chatInputField}
-                  value={chatInput}
-                  onChange={(e) => setChatInput(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSendChat()}
-                  placeholder={t("ሕቶኻ ጸሓፍ...", "Type your question...")}
-                />
-                <button style={styles.chatSendBtn} onClick={handleSendChat}>
-                  ➤
-                </button>
-              </div>
-            </div>
-          </div>
-        );
-      };
-
-      // --- CHAT (standalone) ---
-      const ChatScreen = () => (
-        <div style={{ margin: "16px", background: "#fff", borderRadius: 20, overflow: "hidden", boxShadow: "0 4px 24px rgba(0,0,0,0.08)", height: "calc(100vh - 180px)", display: "flex", flexDirection: "column" }}>
-          <div style={{ padding: "14px 20px", borderBottom: "1px solid #F0F0F0", display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{ width: 40, height: 40, borderRadius: "50%", background: "linear-gradient(135deg, #1B5E20, #4CAF50)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>🌱</div>
-            <div>
-              <div style={{ fontSize: 15, fontWeight: 700, color: "#333" }}>
-                {t("ናይ ሕርሻ AI ሓገዝ", "AI Farming Assistant")}
-              </div>
-              <div style={{ fontSize: 11, color: "#4CAF50", fontWeight: 600 }}>
-                ⚡ Gemma 4 · {t("ኦፍላይን", "Offline")}
-              </div>
-            </div>
-          </div>
-          <div style={{ ...styles.chatContainer, flex: 1 }}>
-            {chatMessages.map((msg, i) => (
-              <div key={i} style={styles.chatBubble(msg.role === "user")}>
-                {msg.text}
-              </div>
-            ))}
-            <div ref={chatEndRef} />
-          </div>
-          <div style={styles.chatInputWrap}>
-            <input
-              style={styles.chatInputField}
-              value={chatInput}
-              onChange={(e) => setChatInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSendChat()}
-              placeholder={t("ሕቶኻ ጸሓፍ...", "Type your question...")}
-            />
-            <button style={styles.chatSendBtn} onClick={handleSendChat}>
-              ➤
-            </button>
-          </div>
+        <div class="nav-item ${state.screen === "garden" ? "active" : ""}">
+          <div class="nav-icon">🌱</div>
+          <div class="nav-label">${t("ጀርዲን", "Garden", state.lang)}</div>
         </div>
-      );
-
-      // --- PLANT TRACKING ---
-      const PlantsScreen = () => (
-        <div>
-          <div style={{ padding: "20px 16px 12px" }}>
-            <h2 style={{ fontSize: 18, fontWeight: 800, color: "#333", margin: 0 }}>
-              {t("ዝተኸታተሉ ኣታኽልቲ", "Tracked Plants")}
-            </h2>
-            <p style={{ fontSize: 12, color: "#888", margin: "4px 0 0" }}>
-              {t("ምዕባለ ኣታኽልትኻ ተኸታተል", "Monitor your plants' recovery progress")}
-            </p>
-          </div>
-          {myPlants.length === 0 ? (
-            <div style={styles.emptyState}>
-              <div style={{ fontSize: 48, marginBottom: 12 }}>🌿</div>
-              <div style={{ fontSize: 15, fontWeight: 600, color: "#666" }}>
-                {t("ገና ኣታኽልቲ የልን", "No plants tracked yet")}
-              </div>
-              <div style={{ fontSize: 13, color: "#999", marginTop: 4, lineHeight: 1.5 }}>
-                {t(
-                  "ኣታኽልቲ ስኣል ንምጅማር",
-                  "Scan a plant to start tracking its recovery"
-                )}
-              </div>
-              <button
-                style={{ ...styles.primaryBtn, width: "auto", display: "inline-flex", alignItems: "center", gap: 8, padding: "12px 28px" }}
-                onClick={handleScan}
-              >
-                📸 {t("ኣታኽልቲ ስኣል", "Scan a Plant")}
-              </button>
-            </div>
-          ) : (
-            myPlants.map((plant) => (
-              <div
-                key={plant.id}
-                style={styles.plantCard(plant.status)}
-                onClick={() => { setSelectedPlant(plant); setScreen("plantDetail"); }}
-              >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                  <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-                    <span style={{ fontSize: 32 }}>{plant.crop.icon}</span>
-                    <div>
-                      <div style={{ fontSize: 15, fontWeight: 700, color: "#333" }}>
-                        {lang === "ti" ? plant.crop.nameTi : plant.crop.nameEn}
-                      </div>
-                      <div style={{ fontSize: 12, color: "#888" }}>
-                        {lang === "ti" ? plant.disease.nameTi : plant.disease.nameEn}
-                      </div>
-                    </div>
-                  </div>
-                  <div style={styles.plantStatus(plant.status)}>
-                    {plant.status === "recovered" ? "✅" : "⏳"}{" "}
-                    {plant.status === "recovered"
-                      ? t("ተሓውዩ", "Recovered")
-                      : t("ይሕከም", "Treating")}
-                  </div>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between", marginTop: 12, fontSize: 11, color: "#999" }}>
-                  <span>📅 {plant.date}</span>
-                  <span>{plant.history.length} {t("ምዝገባታት", "entries")}</span>
-                </div>
-              </div>
-            ))
-          )}
+        <div class="nav-center">📱</div>
+        <div class="nav-item ${state.screen === "plants" ? "active" : ""}">
+          <div class="nav-icon">🌿</div>
+          <div class="nav-label">${t("ኣታኽልቲ", "Plants", state.lang)}</div>
         </div>
-      );
-
-      // --- PLANT DETAIL ---
-      const PlantDetailScreen = () => {
-        const [noteInput, setNoteInput] = useState("");
-        if (!selectedPlant) return null;
-        const plant = myPlants.find((p) => p.id === selectedPlant.id) || selectedPlant;
-
-        return (
-          <div>
-            <div style={{ margin: "16px", background: "#fff", borderRadius: 20, overflow: "hidden", boxShadow: "0 4px 24px rgba(0,0,0,0.08)" }}>
-              <div style={{ background: `linear-gradient(135deg, ${plant.crop.color}, ${plant.crop.color}AA)`, padding: "24px 20px", color: "#fff" }}>
-                <span style={{ fontSize: 40 }}>{plant.crop.icon}</span>
-                <h2 style={{ fontSize: 20, fontWeight: 800, margin: "8px 0 2px" }}>
-                  {lang === "ti" ? plant.crop.nameTi : plant.crop.nameEn}
-                </h2>
-                <p style={{ fontSize: 13, opacity: 0.9, margin: 0 }}>
-                  {lang === "ti" ? plant.disease.nameTi : plant.disease.nameEn} · {plant.date}
-                </p>
-                <div style={{ ...styles.plantStatus(plant.status), marginTop: 12 }}>
-                  {plant.status === "recovered" ? "✅" : "⏳"}{" "}
-                  {plant.status === "recovered" ? t("ተሓውዩ", "Recovered") : t("ይሕከም", "Treating")}
-                </div>
-              </div>
-
-              <div style={styles.section}>
-                <div style={styles.sectionTitle}>📈 {t("ታሪኽ", "Timeline")}</div>
-                {plant.history.map((h, i) => (
-                  <div key={i} style={styles.timelineItem(h.severity)}>
-                    <div style={styles.timelineDot(h.severity)} />
-                    <div>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: "#333" }}>{h.event}</div>
-                      <div style={{ fontSize: 11, color: "#999" }}>{h.date}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div style={styles.section}>
-                <div style={styles.sectionTitle}>📝 {t("ማስታወሻ ወስኽ", "Add Note")}</div>
-                <div style={{ display: "flex", gap: 8 }}>
-                  <input
-                    style={{ ...styles.chatInputField, flex: 1 }}
-                    value={noteInput}
-                    onChange={(e) => setNoteInput(e.target.value)}
-                    placeholder={t("ሎሚ እንታይ ረኢኻ?", "What did you observe today?")}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && noteInput.trim()) {
-                        addPlantNote(plant.id, noteInput.trim());
-                        setNoteInput("");
-                      }
-                    }}
-                  />
-                  <button
-                    style={{ ...styles.chatSendBtn, borderRadius: 14 }}
-                    onClick={() => {
-                      if (noteInput.trim()) {
-                        addPlantNote(plant.id, noteInput.trim());
-                        setNoteInput("");
-                      }
-                    }}
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
-
-              <div style={{ padding: "0 20px 20px" }}>
-                {plant.status !== "recovered" && (
-                  <button style={styles.primaryBtn} onClick={() => { markPlantRecovered(plant.id); }}>
-                    🎉 {t("ተሓውዩ ምልክት ግበር", "Mark as Recovered")}
-                  </button>
-                )}
-                <button style={styles.secondaryBtn} onClick={handleScan}>
-                  📸 {t("ናይ ምዕባለ ስእሊ ስኣል", "Take Progress Photo")}
-                </button>
-              </div>
-            </div>
-          </div>
-        );
-      };
-
-      // --- GARDEN OVERVIEW ---
-      const GardenScreen = () => {
-        const treating = myPlants.filter((p) => p.status === "treating").length;
-        const recovered = myPlants.filter((p) => p.status === "recovered").length;
-        const total = myPlants.length;
-
-        return (
-          <div>
-            <div style={{ padding: "20px 16px 12px" }}>
-              <h2 style={{ fontSize: 18, fontWeight: 800, color: "#333", margin: 0 }}>
-                🏡 {t("ጀርዲነይ", "My Garden")}
-              </h2>
-            </div>
-
-            {total === 0 ? (
-              <div style={styles.emptyState}>
-                <div style={{ fontSize: 64, marginBottom: 16 }}>🏡</div>
-                <div style={{ fontSize: 16, fontWeight: 700, color: "#555" }}>
-                  {t("ጀርዲንካ ጀምር", "Start Your Garden")}
-                </div>
-                <div style={{ fontSize: 13, color: "#999", marginTop: 8, lineHeight: 1.6, maxWidth: 260, margin: "8px auto 0" }}>
-                  {t(
-                    "ኣታኽልቲ ስኣል — ኣብ ጀርዲንካ ተወሲኹ ምዕባለ ትከታተል",
-                    "Scan plants to add them to your garden and track their health over time"
-                  )}
-                </div>
-                <button style={{ ...styles.primaryBtn, width: "auto", display: "inline-flex", gap: 8, padding: "14px 32px", marginTop: 20 }} onClick={handleScan}>
-                  📸 {t("ኣታኽልቲ ስኣል", "Scan a Plant")}
-                </button>
-              </div>
-            ) : (
-              <>
-                {/* Stats */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, padding: "0 16px", marginBottom: 20 }}>
-                  <div style={{ background: "#fff", borderRadius: 16, padding: "16px 12px", textAlign: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
-                    <div style={{ fontSize: 28, fontWeight: 800, color: "#333" }}>{total}</div>
-                    <div style={{ fontSize: 11, color: "#888", fontWeight: 600 }}>{t("ጠቕላላ", "Total")}</div>
-                  </div>
-                  <div style={{ background: "#FFF3E0", borderRadius: 16, padding: "16px 12px", textAlign: "center" }}>
-                    <div style={{ fontSize: 28, fontWeight: 800, color: "#E65100" }}>{treating}</div>
-                    <div style={{ fontSize: 11, color: "#E65100", fontWeight: 600 }}>{t("ይሕከም", "Treating")}</div>
-                  </div>
-                  <div style={{ background: "#E8F5E9", borderRadius: 16, padding: "16px 12px", textAlign: "center" }}>
-                    <div style={{ fontSize: 28, fontWeight: 800, color: "#2E7D32" }}>{recovered}</div>
-                    <div style={{ fontSize: 11, color: "#2E7D32", fontWeight: 600 }}>{t("ተሓውዩ", "Recovered")}</div>
-                  </div>
-                </div>
-
-                {/* Health bar */}
-                {total > 0 && (
-                  <div style={{ padding: "0 16px", marginBottom: 20 }}>
-                    <div style={{ background: "#fff", borderRadius: 16, padding: 16, boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: "#333", marginBottom: 8 }}>
-                        {t("ጥዕና ጀርዲን", "Garden Health")}
-                      </div>
-                      <div style={{ height: 12, borderRadius: 6, background: "#F0F0F0", overflow: "hidden", display: "flex" }}>
-                        <div style={{ width: `${(recovered / total) * 100}%`, background: "linear-gradient(90deg, #4CAF50, #66BB6A)", transition: "width 0.5s" }} />
-                        <div style={{ width: `${(treating / total) * 100}%`, background: "linear-gradient(90deg, #FF9800, #FFB74D)", transition: "width 0.5s" }} />
-                      </div>
-                      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6, fontSize: 11, color: "#888" }}>
-                        <span>{Math.round((recovered / total) * 100)}% {t("ጥዑይ", "healthy")}</span>
-                        <span>{Math.round((treating / total) * 100)}% {t("ይሕከም", "treating")}</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Plant list */}
-                <div style={{ padding: "0 0 8px" }}>
-                  {myPlants.map((plant) => (
-                    <div
-                      key={plant.id}
-                      style={styles.plantCard(plant.status)}
-                      onClick={() => { setSelectedPlant(plant); setScreen("plantDetail"); }}
-                    >
-                      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-                        <span style={{ fontSize: 32 }}>{plant.crop.icon}</span>
-                        <div style={{ flex: 1 }}>
-                          <div style={{ fontSize: 14, fontWeight: 700, color: "#333" }}>
-                            {lang === "ti" ? plant.crop.nameTi : plant.crop.nameEn}
-                          </div>
-                          <div style={{ fontSize: 12, color: "#888" }}>
-                            {lang === "ti" ? plant.disease.nameTi : plant.disease.nameEn}
-                          </div>
-                        </div>
-                        <div style={styles.plantStatus(plant.status)}>
-                          {plant.status === "recovered" ? "✅" : "⏳"}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
-        );
-      };
-
-      // --- SEASONAL TIPS ---
-      const TipsScreen = () => (
-        <div>
-          <div style={{ padding: "20px 16px 12px" }}>
-            <h2 style={{ fontSize: 18, fontWeight: 800, color: "#333", margin: 0 }}>
-              📅 {t("ወቕታዊ ምኽሪ", "Seasonal Tips")}
-            </h2>
-            <p style={{ fontSize: 12, color: "#888", margin: "4px 0 0" }}>
-              {t("ንወቕቲ ዝሰማማዕ ምኽሪ", "Advice tailored to the current season")}
-            </p>
-          </div>
-
-          <div style={{ display: "flex", gap: 10, padding: "0 16px", marginBottom: 20, overflowX: "auto" }}>
-            {Object.entries(SEASONAL_TIPS).map(([key, season]) => (
-              <div
-                key={key}
-                style={styles.seasonCard(currentSeason === key)}
-                onClick={() => setCurrentSeason(key)}
-              >
-                <div style={{ fontSize: 13, fontWeight: 700 }}>
-                  {lang === "ti" ? season.nameTi : season.nameEn}
-                </div>
-                <div style={{ fontSize: 10, opacity: 0.8, marginTop: 2 }}>{season.months}</div>
-              </div>
-            ))}
-          </div>
-
-          <div style={{ padding: "0 16px" }}>
-            {SEASONAL_TIPS[currentSeason].tips.map((tip, i) => (
-              <div key={i} style={styles.tipCard}>
-                <div style={{ width: 32, height: 32, borderRadius: "50%", background: "linear-gradient(135deg, #E8F5E9, #C8E6C9)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 }}>
-                  {["🌧️", "💧", "🐛", "🌾"][i % 4]}
-                </div>
-                <div style={{ fontSize: 13, color: "#444", lineHeight: 1.6 }}>
-                  {lang === "ti" ? tip.ti : tip.en}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Crop calendar */}
-          <div style={{ padding: "20px 16px 0" }}>
-            <div style={{
-              background: "linear-gradient(135deg, #E8F5E9, #C8E6C9)",
-              borderRadius: 16,
-              padding: 20,
-            }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: "#1B5E20", marginBottom: 8 }}>
-                💡 {t("ፍሉይ ምኽሪ", "Pro Tip")}
-              </div>
-              <div style={{ fontSize: 13, color: "#2E7D32", lineHeight: 1.7 }}>
-                {currentSeason === "kremti"
-                  ? t(
-                      "ኣብ ክረምቲ ኣዘውቲርካ ኣታኽልትኻ ፈትሽ — ሕማም ኣብ ዝናባዊ ወቕቲ ቀልጢፉ ይዝርጋሕ። ኣብ ሰሙን ሓደ ግዜ ስኣል።",
-                      "During kremti, inspect your crops frequently — diseases spread fast in wet conditions. Scan at least once a week."
-                    )
-                  : currentSeason === "hagay"
-                  ? t(
-                      "ኣብ ሓጋይ ማይ ምቚጣብ ኣገዳሲ እዩ። ንግሆ ቀልጢፍካ ወይ ምሸት ኣፍስስ ንኽትቍጥብ።",
-                      "During hagay, water conservation is key. Water early morning or evening to minimize evaporation."
-                    )
-                  : t(
-                      "ኣዝመራ ንምድላው ዝበለጸ ግዜ እዩ — መሬት ሕረስ፡ ዘርኢ ኣዳሉ፡ ንክረምቲ ተዳሉ።",
-                      "Azmera is the best time to prepare — plow fields, organize seeds, and get ready for the main season."
-                    )}
-              </div>
-            </div>
-          </div>
+        <div class="nav-item ${state.screen === "tips" ? "active" : ""}">
+          <div class="nav-icon">💡</div>
+          <div class="nav-label">${t("ምክሊ", "Tips", state.lang)}</div>
         </div>
-      );
+      `;
 
-      // --- SCANNING OVERLAY ---
-      const ScanningOverlay = () => (
-        <div style={styles.scanOverlay}>
-          <div style={{ color: "#fff", fontSize: 14, fontWeight: 600, marginBottom: 20, textAlign: "center" }}>
-            {t("ኣታኽልቲ ይስእል ኣሎ...", "Scanning plant...")}
-          </div>
-          <div style={styles.scanViewfinder}>
-            <div style={{ fontSize: 64, opacity: 0.3 }}>🌿</div>
-            <div style={styles.scanLine(scanProgress)} />
-            {/* Corner markers */}
-            {[
-              { top: 0, left: 0, borderTop: "3px solid #4CAF50", borderLeft: "3px solid #4CAF50" },
-              { top: 0, right: 0, borderTop: "3px solid #4CAF50", borderRight: "3px solid #4CAF50" },
-              { bottom: 0, left: 0, borderBottom: "3px solid #4CAF50", borderLeft: "3px solid #4CAF50" },
-              { bottom: 0, right: 0, borderBottom: "3px solid #4CAF50", borderRight: "3px solid #4CAF50" },
-            ].map((pos, i) => (
-              <div key={i} style={{ position: "absolute", width: 30, height: 30, ...pos }} />
-            ))}
-          </div>
-          <div style={{ marginTop: 24, width: 200 }}>
-            <div style={{ height: 4, borderRadius: 2, background: "rgba(255,255,255,0.2)", overflow: "hidden" }}>
-              <div style={{ height: "100%", width: `${scanProgress}%`, background: "#4CAF50", borderRadius: 2, transition: "width 0.1s" }} />
-            </div>
-            <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 12, textAlign: "center", marginTop: 8 }}>
-              Gemma 4 · {t("ይመርምር ኣሎ", "Analyzing")}... {scanProgress}%
-            </div>
-          </div>
-        </div>
-      );
+      nav.children[0].addEventListener("click", () => {
+        state.screen = "home";
+        render();
+      });
+      nav.children[1].addEventListener("click", () => {
+        state.screen = "garden";
+        render();
+      });
+      nav.children[2].addEventListener("click", () => {
+        state.screen = "diagnosis";
+        state.isScanning = true;
+        state.scanProgress = 0;
+        render();
+        startScanning();
+      });
+      nav.children[3].addEventListener("click", () => {
+        state.screen = "plants";
+        render();
+      });
+      nav.children[4].addEventListener("click", () => {
+        state.screen = "tips";
+        render();
+      });
 
-      // ============================================================
-      // RENDER
-      // ============================================================
-      const screens = {
-        home: HomeScreen,
-        diagnosis: DiagnosisScreen,
-        chat: ChatScreen,
-        plants: PlantsScreen,
-        plantDetail: PlantDetailScreen,
-        garden: GardenScreen,
-        tips: TipsScreen,
-      };
-      const CurrentScreen = screens[screen] || HomeScreen;
+      app.appendChild(nav);
 
-      return (
-        <div style={styles.app}>
-          {/* Header */}
-          <div style={styles.header}>
-            <div>
-              <div style={styles.headerTitle}>
-                {screen !== "home" && (
-                  <button style={styles.backBtn} onClick={() => setScreen(screen === "plantDetail" ? "plants" : "home")}>
-                    ←
-                  </button>
-                )}
-                🌱 ጽቡቕ ተኽሊ
-              </div>
-              <div style={styles.headerSub}>Tsibuk Teklil · Plant Health AI</div>
-            </div>
-            <button
-              style={styles.langToggle}
-              onClick={() => setLang((l) => (l === "ti" ? "en" : "ti"))}
-            >
-              {lang === "ti" ? "EN" : "ትግ"}
-            </button>
+      // Scanning Overlay
+      if (state.isScanning) {
+        const overlay = document.createElement("div");
+        overlay.className = "scan-overlay";
+        overlay.innerHTML = `
+          <div class="viewfinder">
+            <div class="scan-line"></div>
           </div>
-
-          {/* Content */}
-          <div style={styles.content}>
-            <CurrentScreen />
+          <div class="scan-progress">
+            <div class="scan-percentage">${state.scanProgress}%</div>
+            <div class="scan-text">${t("ስእሊ ሰሪሕ...", "Scanning...", state.lang)}</div>
           </div>
-
-          {/* Navigation */}
-          <div style={styles.nav}>
-            {[
-              { id: "home", icon: "🏠", label: t("ገዛ", "Home") },
-              { id: "garden", icon: "🏡", label: t("ጀርዲን", "Garden") },
-              { id: "scan", icon: "📸", label: t("ስኣል", "Scan"), action: handleScan },
-              { id: "plants", icon: "📋", label: t("ዝርዝር", "Plants") },
-              { id: "tips", icon: "📅", label: t("ምኽሪ", "Tips") },
-            ].map((item) => (
-              <div
-                key={item.id}
-                style={styles.navItem(screen === item.id || (item.id === "scan" && isScanning))}
-                onClick={() => (item.action ? item.action() : setScreen(item.id))}
-              >
-                <span style={{
-                  ...styles.navIcon(screen === item.id),
-                  ...(item.id === "scan" ? {
-                    background: "linear-gradient(135deg, #1B5E20, #4CAF50)",
-                    borderRadius: "50%",
-                    width: 48,
-                    height: 48,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginTop: -24,
-                    boxShadow: "0 4px 16px rgba(27,94,32,0.3)",
-                    filter: "none",
-                  } : {}),
-                }}>
-                  {item.icon}
-                </span>
-                <span>{item.label}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* Scanning Overlay */}
-          {isScanning && <ScanningOverlay />}
-        </div>
-      );
+        `;
+        app.appendChild(overlay);
+      }
     }
 
-    // Render the app
-    ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(TsibukTeklil));
+    function renderHome() {
+      const cropEntries = Object.entries(CROPS);
+      const cropGrid = cropEntries
+        .map(
+          ([key, crop]) =>
+            `<div class="crop-item" data-crop="${key}">
+        <div class="crop-icon">${crop.icon}</div>
+        <div class="crop-name">${t(crop.nameTi, crop.nameEn, state.lang)}</div>
+      </div>`
+        )
+        .join("");
+
+      return `
+        <div class="hero-card">
+          <div class="hero-icon">🌱</div>
+          <div class="hero-title">${t("ጽቡቕ ተኽሊ", "Healthy Plant", state.lang)}</div>
+          <div class="hero-subtitle">${t(
+        "ንኤርትራዊ ሓርሳ",
+        "For Eritrean Farmers",
+        state.lang
+      )}</div>
+          <button class="scan-button">${t("ስእሊ ልድ", "Scan Now", state.lang)}</button>
+        </div>
+
+        <div class="quick-actions">
+          <div class="action-tile">
+            <div class="action-icon">🌳</div>
+            <div class="action-label">${t("ሰፈርቲ", "My Garden", state.lang)}</div>
+          </div>
+          <div class="action-tile">
+            <div class="action-icon">📅</div>
+            <div class="action-label">${t("ወቕታዊ ምክሊ", "Seasonal Tips", state.lang)}</div>
+          </div>
+          <div class="action-tile">
+            <div class="action-icon">📋</div>
+            <div class="action-label">${t("ተከታታይ ዝራእቲ", "Tracked Plants", state.lang)}</div>
+          </div>
+          <div class="action-tile">
+            <div class="action-icon">💬</div>
+            <div class="action-label">${t("ሕቶ ሕተተ", "Ask AI", state.lang)}</div>
+          </div>
+        </div>
+
+        <div class="crops-grid">${cropGrid}</div>
+
+        <div class="offline-banner">
+          ✓ ${t("ብምንም ኢንተርነት ይሰራ", "Works Offline", state.lang)}
+        </div>
+      `;
+    }
+
+    function renderGarden() {
+      const treating = state.myPlants.filter((p) => p.status === "treating").length;
+      const recovered = state.myPlants.filter((p) => p.status === "recovered").length;
+      const total = state.myPlants.length;
+      const health = total > 0 ? Math.round(((total - treating) / total) * 100) : 0;
+
+      let plantListHtml = state.myPlants
+        .map(
+          (plant) =>
+            `<div class="plant-item" data-plant-id="${plant.id}">
+        <div class="plant-icon">${CROPS[plant.crop].icon}</div>
+        <div class="plant-info">
+          <div class="plant-name">${plant.name}</div>
+          <div class="plant-status ${
+              plant.status === "treating"
+                ? "status-treating"
+                : "status-recovered"
+            }">
+            ${plant.status === "treating"
+              ? t("ሕክምና", "Treating", state.lang)
+              : t("ረኺበት", "Recovered", state.lang)
+            }
+          </div>
+        </div>
+      </div>`
+        )
+        .join("");
+
+      if (state.myPlants.length === 0) {
+        plantListHtml = `<div class="empty-state">
+        <div class="empty-icon">🌱</div>
+        <div class="empty-text">${t(
+          "ኣታኽልቲ ትከላ ታሕሳስ",
+          "No plants tracked yet",
+          state.lang
+        )}</div>
+      </div>`;
+      }
+
+      return `
+        <h2>${t("ጀርዲን", "My Garden", state.lang)}</h2>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number">${total}</div>
+            <div class="stat-label">${t("ሙሉእ", "Total", state.lang)}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">${treating}</div>
+            <div class="stat-label">${t("ሕክምና", "Treating", state.lang)}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">${recovered}</div>
+            <div class="stat-label">${t("ረኺበት", "Recovered", state.lang)}</div>
+          </div>
+        </div>
+
+        <div class="health-section">
+          <div class="health-title">${t("ጥዕና ጀርዲን", "Garden Health", state.lang)}</div>
+          <div class="health-bar-bg">
+            <div class="health-bar-fill" style="width: ${health}%"></div>
+          </div>
+          <div class="health-text">${health}%</div>
+        </div>
+
+        <div class="plant-list">
+          ${plantListHtml}
+        </div>
+      `;
+    }
+
+    function renderPlants() {
+      let html = state.myPlants
+        .map(
+          (plant) =>
+            `<div class="plant-item" data-plant-id="${plant.id}">
+        <div class="plant-icon">${CROPS[plant.crop].icon}</div>
+        <div class="plant-info">
+          <div class="plant-name">${plant.name}</div>
+          <div class="plant-status ${
+              plant.status === "treating"
+                ? "status-treating"
+                : "status-recovered"
+            }">
+            ${plant.status === "treating"
+              ? t("ሕክምና", "Treating", state.lang)
+              : t("ረኺበት", "Recovered", state.lang)
+            }
+          </div>
+        </div>
+      </div>`
+        )
+        .join("");
+
+      if (state.myPlants.length === 0) {
+        html = `<div class="empty-state">
+        <div class="empty-icon">🌿</div>
+        <div class="empty-text">${t(
+          "ኣታኽልቲ ትከላ ታሕሳስ",
+          "No plants tracked yet",
+          state.lang
+        )}</div>
+      </div>`;
+      }
+
+      return `
+        <h2>${t("ተከታታይ ዝራእቲ", "Tracked Plants", state.lang)}</h2>
+        <div class="plant-list">
+          ${html}
+        </div>
+      `;
+    }
+
+    function renderPlantDetail() {
+      const plant = state.myPlants.find((p) => p.id === state.selectedPlantId);
+      if (!plant) return `<div>${t("ኣታኽልቲ ዘይወሃበ", "Plant not found", state.lang)}</div>`;
+
+      const crop = CROPS[plant.crop];
+      const timeline = plant.timeline
+        .map(
+          (event) =>
+            `<div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <div class="timeline-date">${event.date}</div>
+          <div class="timeline-text">${event.text}</div>
+        </div>
+      </div>`
+        )
+        .join("");
+
+      return `
+        <button class="back-button" data-action="back-plant-detail">← ${t(
+        "ተመለሰ",
+        "Back",
+        state.lang
+      )}</button>
+
+        <div class="detail-header">
+          <div class="detail-icon">${crop.icon}</div>
+          <div class="detail-name">${plant.name}</div>
+          <div class="detail-subtitle">${t(crop.nameTi, crop.nameEn, state.lang)}</div>
+        </div>
+
+        <div class="health-section">
+          <div class="health-title">${t("ጥዕና ኣታኽልቲ", "Plant Health", state.lang)}</div>
+          <div class="health-bar-bg">
+            <div class="health-bar-fill" style="width: ${plant.health}%"></div>
+          </div>
+          <div class="health-text">${plant.health}%</div>
+        </div>
+
+        <div class="section-label">${t("ታሪክ", "Timeline", state.lang)}</div>
+        <div class="timeline">
+          ${timeline}
+        </div>
+
+        <div class="section-label">${t("ድሌት ወስኽ", "Add Note", state.lang)}</div>
+        <div class="note-input-area">
+          <input type="text" class="note-input" placeholder="${t(
+        "ድሌት ክትብል",
+        "Your note...",
+        state.lang
+      )}" id="note-input-${plant.id}">
+          <button class="note-btn" data-plant-id="${plant.id}">${t("ወስኽ", "Add", state.lang)}</button>
+        </div>
+      `;
+    }
+
+    function renderDiagnosis() {
+      if (!state.diagnosisResult) {
+        return `<div class="empty-state">
+        <div class="empty-icon">🔍</div>
+        <div class="empty-text">${t(
+          "ምንም ምርመራ ዘይግበር",
+          "No diagnosis yet",
+          state.lang
+        )}</div>
+      </div>`;
+      }
+
+      const { disease, crop } = state.diagnosisResult;
+      const sev = severityConfig[disease.severity];
+
+      return `
+        <button class="back-button" data-action="back-diagnosis">← ${t(
+        "ተመለሰ",
+        "Back",
+        state.lang
+      )}</button>
+
+        <div class="diagnosis-container">
+          <div class="diagnosis-icon">${crop.icon}</div>
+          <div class="diagnosis-title">${t(disease.nameTi, disease.nameEn, state.lang)}</div>
+          <div class="diagnosis-title-en">${t(disease.nameEn, disease.nameTi, state.lang)}</div>
+
+          <div class="severity-badge" style="background: ${sev.bg}; color: ${sev.color};">
+            ${sev.icon} ${t(sev.labelTi, sev.labelEn, state.lang)}
+          </div>
+
+          <div class="section-label">${t("ምስጢር", "Confidence", state.lang)}</div>
+          <div class="confidence-bar">
+            <div class="confidence-fill" style="width: ${disease.confidence}%"></div>
+          </div>
+          <div style="font-size: 12px; color: #666; margin-bottom: 16px;">${disease.confidence}%</div>
+
+          <div class="section-label">${t("ምልክታት", "Symptoms", state.lang)}</div>
+          <div class="section-content">${t(
+        disease.symptomsTi,
+        disease.symptomsEn,
+        state.lang
+      )}</div>
+
+          <div class="section-label">${t("ሕክምና", "Treatment", state.lang)}</div>
+          <div class="section-content">${t(disease.remedyTi, disease.remedyEn, state.lang)}</div>
+
+          <div class="section-label">${t("ምክልኻል", "Prevention", state.lang)}</div>
+          <div class="section-content">${t(
+        disease.preventionTi,
+        disease.preventionEn,
+        state.lang
+      )}</div>
+
+          <div class="action-buttons">
+            <button class="btn btn-primary" data-action="save-plant">${t(
+        "ጀርዲን ውሰድ",
+        "Save to Garden",
+        state.lang
+      )}</button>
+            <button class="btn btn-secondary" data-action="scan-another">${t(
+        "ካሎ ልድ",
+        "Scan Another",
+        state.lang
+      )}</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderChat() {
+      const messagesHtml = state.chatMessages
+        .map(
+          (msg) =>
+            `<div class="chat-message ${msg.type === "user" ? "message-user" : ""}">
+        <div class="message-bubble ${msg.type === "user" ? "bubble-user" : "bubble-assistant"}">
+          ${msg.text}
+        </div>
+      </div>`
+        )
+        .join("");
+
+      return `
+        <div class="chat-container" style="margin: -16px -16px 0 -16px; height: calc(100vh - 180px); border-radius: 0; box-shadow: none;">
+          <div class="chat-messages">
+            ${messagesHtml}
+          </div>
+          <div class="chat-input-area">
+            <input type="text" class="chat-input" id="chat-input" placeholder="${t(
+        "ሕቶ ሕተተ...",
+        "Ask me...",
+        state.lang
+      )}">
+            <button class="chat-send">📤</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderTips() {
+      const seasons = ["kremti", "hagay", "azmera"];
+      const seasonTabs = seasons
+        .map(
+          (s) =>
+            `<button class="tab-btn ${state.currentSeason === s ? "active" : ""}" data-season="${s}">
+        ${t(SEASONAL_TIPS[s].nameTi, SEASONAL_TIPS[s].nameEn, state.lang)}
+      </button>`
+        )
+        .join("");
+
+      const currentTips = SEASONAL_TIPS[state.currentSeason];
+      const tipsHtml = currentTips.tips
+        .map((tip) => `<div class="tip-card">${t(tip.ti, tip.en, state.lang)}</div>`)
+        .join("");
+
+      return `
+        <h2>${t("ወቕታዊ ምክሊ", "Seasonal Tips", state.lang)}</h2>
+
+        <div class="season-tabs">
+          ${seasonTabs}
+        </div>
+
+        <div class="season-header">
+          <div class="season-name">${t(currentTips.nameTi, currentTips.nameEn, state.lang)}</div>
+          <div class="season-months">${currentTips.months}</div>
+        </div>
+
+        <div class="tips-list">
+          ${tipsHtml}
+        </div>
+
+        <div class="pro-tip-box">
+          <div class="pro-tip-icon">⭐</div>
+          <div>${t(
+        "ጥዕና መሬት ግዜ ሰኦ ንጅብ ይሕግዝ",
+        "Healthy soil is the best investment",
+        state.lang
+      )}</div>
+        </div>
+      `;
+    }
+
+    function startScanning() {
+      const interval = setInterval(() => {
+        state.scanProgress += Math.random() * 20;
+        if (state.scanProgress >= 100) {
+          state.scanProgress = 100;
+          clearInterval(interval);
+          setTimeout(() => {
+            state.isScanning = false;
+            const disease = DISEASES[Math.floor(Math.random() * DISEASES.length)];
+            const crop = CROPS[disease.crop];
+            state.diagnosisResult = { disease, crop };
+            state.screen = "diagnosis";
+            render();
+            attachEventListeners();
+          }, 500);
+        } else {
+          render();
+        }
+      }, 400);
+    }
+
+    function attachEventListeners() {
+      // Home screen
+      document.querySelectorAll(".scan-button").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          state.screen = "diagnosis";
+          state.isScanning = true;
+          state.scanProgress = 0;
+          render();
+          startScanning();
+        });
+      });
+
+      document.querySelectorAll(".action-tile").forEach((tile, idx) => {
+        tile.addEventListener("click", () => {
+          if (idx === 0) state.screen = "garden";
+          else if (idx === 1) state.screen = "tips";
+          else if (idx === 2) state.screen = "plants";
+          else if (idx === 3) state.screen = "chat";
+          render();
+          if (state.screen === "chat") attachEventListeners();
+        });
+      });
+
+      // Garden and plants plant items
+      document.querySelectorAll(".plant-item").forEach((item) => {
+        item.addEventListener("click", () => {
+          const plantId = parseInt(item.dataset.plantId);
+          state.selectedPlantId = plantId;
+          state.screen = "plant-detail";
+          render();
+          attachEventListeners();
+        });
+      });
+
+      // Plant detail back button
+      document.querySelector("[data-action='back-plant-detail']")?.addEventListener("click", () => {
+        state.selectedPlantId = null;
+        state.screen = "plants";
+        render();
+        attachEventListeners();
+      });
+
+      // Diagnosis buttons
+      document.querySelector("[data-action='save-plant']")?.addEventListener("click", () => {
+        const { disease, crop } = state.diagnosisResult;
+        const plant = {
+          id: Date.now(),
+          crop: disease.crop,
+          name: `${t(crop.nameTi, crop.nameEn, state.lang)} (${new Date().toLocaleDateString()})`,
+          status: "treating",
+          health: 40,
+          timeline: [
+            {
+              date: new Date().toLocaleDateString(),
+              text: t(disease.nameTi, disease.nameEn, state.lang),
+            },
+          ],
+        };
+        state.myPlants.push(plant);
+        state.screen = "garden";
+        state.diagnosisResult = null;
+        render();
+        attachEventListeners();
+      });
+
+      document.querySelector("[data-action='scan-another']")?.addEventListener("click", () => {
+        state.diagnosisResult = null;
+        state.screen = "home";
+        render();
+        attachEventListeners();
+      });
+
+      document.querySelector("[data-action='back-diagnosis']")?.addEventListener("click", () => {
+        state.diagnosisResult = null;
+        state.screen = "home";
+        render();
+        attachEventListeners();
+      });
+
+      // Chat
+      const chatInput = document.getElementById("chat-input");
+      const chatSend = document.querySelector(".chat-send");
+      if (chatInput && chatSend) {
+        const sendMessage = () => {
+          const text = chatInput.value.trim();
+          if (!text) return;
+          state.chatMessages.push({
+            id: state.nextChatId++,
+            type: "user",
+            text,
+          });
+          const response = generateResponse(text, {
+            currentDisease: state.diagnosisResult?.disease,
+            currentCrop: state.diagnosisResult?.crop,
+          }, state.lang);
+          state.chatMessages.push({
+            id: state.nextChatId++,
+            type: "assistant",
+            text: response,
+          });
+          chatInput.value = "";
+          render();
+          attachEventListeners();
+          setTimeout(() => {
+            const chatMessages = document.querySelector(".chat-messages");
+            if (chatMessages) chatMessages.scrollTop = chatMessages.scrollHeight;
+          }, 0);
+        };
+        chatInput.addEventListener("keypress", (e) => {
+          if (e.key === "Enter") sendMessage();
+        });
+        chatSend.addEventListener("click", sendMessage);
+      }
+
+      // Season tabs
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          state.currentSeason = btn.dataset.season;
+          render();
+          attachEventListeners();
+        });
+      });
+
+      // Plant detail notes
+      document.querySelectorAll(".note-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const plantId = parseInt(btn.dataset.plantId);
+          const input = document.getElementById(`note-input-${plantId}`);
+          const note = input.value.trim();
+          if (!note) return;
+          const plant = state.myPlants.find((p) => p.id === plantId);
+          if (plant) {
+            plant.timeline.push({
+              date: new Date().toLocaleDateString(),
+              text: note,
+            });
+            input.value = "";
+            render();
+            attachEventListeners();
+          }
+        });
+      });
+    }
+
+    // INITIALIZE
+    render();
+    attachEventListeners();
+
+    // Service Worker
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./sw.js").catch(() => {
+        // SW not available, app still works
+      });
+    }
   </script>
 </body>
 </html>

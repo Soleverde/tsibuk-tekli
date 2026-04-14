@@ -1,7 +1,6 @@
 # 🌱 ጽቡቕ ተኽሊ — Tsibuk Teklil
 
 AI-Powered Plant Health Assistant for Eritrean Farmers.
-Powered by Gemma 4.
 
 ## Deploy to GitHub Pages (5 minutes)
 
@@ -39,7 +38,7 @@ Share this link with anyone — it works on any phone browser!
 ## Features
 
 - 📸 Camera-based plant disease scanning
-- 🤖 AI conversation (Gemma 4) in Tigrinya and English
+- 🤖 AI conversation in Tigrinya and English
 - 🏡 Garden dashboard with health tracking
 - 📋 Plant recovery timeline and notes
 - 📅 Seasonal farming tips (Kremti, Hagay, Azmera)
@@ -52,5 +51,5 @@ Share this link with anyone — it works on any phone browser!
 This is a single-file React app. No build tools, no npm, no server needed.
 Just one `index.html` file that runs everywhere.
 
-For the production version, Gemma 4 would run on-device via MediaPipe LLM Inference API
-with a lightweight vision model (SigLIP/EfficientNet-Lite) for plant image classification.
+For the production version, an on-device AI model handles plant image classification
+and conversational diagnosis — fully offline.
