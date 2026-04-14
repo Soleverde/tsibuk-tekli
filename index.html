@@ -1,1768 +1,786 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ti">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#1B5E20">
-  <meta name="description" content="AI-Powered Plant Health Assistant for Eritrean Farmers.">
-  <title>ጽቡቕ ተኽሊ | Tsibuk Teklil</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      background: #F0F7F0;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      overflow-x: hidden;
-    }
-
-    #root {
-      max-width: 430px;
-      margin: 0 auto;
-      background: #fff;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
-    }
-
-    /* HEADER */
-    .header {
-      background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
-      color: white;
-      padding: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    .header-title {
-      font-size: 18px;
-      font-weight: 600;
-    }
-
-    .lang-toggle {
-      background: rgba(255,255,255,0.2);
-      border: 1px solid rgba(255,255,255,0.4);
-      color: white;
-      padding: 6px 12px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 500;
-      transition: all 0.2s;
-    }
-
-    .lang-toggle:active {
-      background: rgba(255,255,255,0.3);
-    }
-
-    /* SCREEN CONTAINER */
-    .screen-container {
-      flex: 1;
-      overflow-y: auto;
-      padding-bottom: 70px;
-      scroll-behavior: smooth;
-    }
-
-    .screen-content {
-      padding: 16px;
-    }
-
-    /* BOTTOM NAV */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      max-width: 430px;
-      margin: 0 auto;
-      background: white;
-      border-top: 1px solid #e0e0e0;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      height: 70px;
-      box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
-      z-index: 50;
-    }
-
-    .nav-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      cursor: pointer;
-      flex: 1;
-      padding: 8px 0;
-      border-radius: 8px;
-      transition: all 0.2s;
-      position: relative;
-    }
-
-    .nav-item:active {
-      background: #f0f7f0;
-    }
-
-    .nav-item.active {
-      color: #1B5E20;
-    }
-
-    .nav-item.active .nav-icon {
-      transform: scale(1.2);
-    }
-
-    .nav-icon {
-      font-size: 24px;
-      transition: transform 0.2s;
-    }
-
-    .nav-label {
-      font-size: 11px;
-      font-weight: 500;
-      text-align: center;
-    }
-
-    .nav-center {
-      width: 56px;
-      height: 56px;
-      margin-top: -28px;
-      background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
-      border-radius: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 28px;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(27, 94, 32, 0.3);
-      transition: transform 0.2s;
-    }
-
-    .nav-center:active {
-      transform: scale(0.95);
-    }
-
-    /* HOME SCREEN */
-    .hero-card {
-      background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
-      border-radius: 20px;
-      padding: 24px;
-      color: white;
-      text-align: center;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 16px rgba(27, 94, 32, 0.2);
-    }
-
-    .hero-icon {
-      font-size: 48px;
-      margin-bottom: 12px;
-    }
-
-    .hero-title {
-      font-size: 24px;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-
-    .hero-subtitle {
-      font-size: 14px;
-      opacity: 0.9;
-      margin-bottom: 20px;
-    }
-
-    .scan-button {
-      background: white;
-      color: #1B5E20;
-      border: none;
-      padding: 12px 28px;
-      border-radius: 20px;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 14px;
-      transition: transform 0.2s;
-      display: inline-block;
-    }
-
-    .scan-button:active {
-      transform: scale(0.95);
-    }
-
-    .quick-actions {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .action-tile {
-      background: white;
-      border: 1px solid #e0e0e0;
-      border-radius: 16px;
-      padding: 16px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    }
-
-    .action-tile:active {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-
-    .action-icon {
-      font-size: 32px;
-      margin-bottom: 8px;
-    }
-
-    .action-label {
-      font-size: 13px;
-      font-weight: 500;
-      color: #333;
-    }
-
-    .crops-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .crop-item {
-      background: white;
-      border: 2px solid #e0e0e0;
-      border-radius: 12px;
-      padding: 12px 8px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .crop-item:active {
-      transform: scale(0.95);
-    }
-
-    .crop-icon {
-      font-size: 28px;
-      margin-bottom: 4px;
-    }
-
-    .crop-name {
-      font-size: 10px;
-      color: #666;
-      line-height: 1.3;
-    }
-
-    .offline-banner {
-      background: #c8e6c9;
-      border-left: 4px solid #1B5E20;
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 12px;
-      color: #2e5f35;
-      margin-bottom: 20px;
-    }
-
-    /* SCANNING OVERLAY */
-    .scan-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.95);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      color: white;
-    }
-
-    .viewfinder {
-      width: 240px;
-      height: 240px;
-      border: 3px solid #1B5E20;
-      border-radius: 12px;
-      position: relative;
-      background: rgba(27, 94, 32, 0.1);
-      margin-bottom: 40px;
-    }
-
-    .scan-line {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: #1B5E20;
-      box-shadow: 0 0 10px #1B5E20;
-      animation: scan-move 2s infinite;
-    }
-
-    @keyframes scan-move {
-      0% { top: 0; }
-      100% { top: 240px; }
-    }
-
-    .scan-progress {
-      text-align: center;
-    }
-
-    .scan-percentage {
-      font-size: 32px;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-
-    .scan-text {
-      font-size: 14px;
-      opacity: 0.8;
-    }
-
-    /* DIAGNOSIS SCREEN */
-    .diagnosis-container {
-      background: white;
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-      margin-bottom: 20px;
-    }
-
-    .diagnosis-icon {
-      font-size: 64px;
-      text-align: center;
-      margin-bottom: 16px;
-    }
-
-    .diagnosis-title {
-      font-size: 20px;
-      font-weight: 600;
-      text-align: center;
-      margin-bottom: 4px;
-      color: #333;
-    }
-
-    .diagnosis-title-en {
-      font-size: 14px;
-      text-align: center;
-      color: #999;
-      margin-bottom: 16px;
-    }
-
-    .severity-badge {
-      display: inline-block;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-      margin-bottom: 16px;
-    }
-
-    .confidence-bar {
-      background: #e0e0e0;
-      height: 8px;
-      border-radius: 4px;
-      overflow: hidden;
-      margin-bottom: 16px;
-    }
-
-    .confidence-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #4CAF50 0%, #1B5E20 100%);
-      transition: width 0.3s;
-    }
-
-    .section-label {
-      font-size: 12px;
-      font-weight: 600;
-      color: #1B5E20;
-      text-transform: uppercase;
-      margin-top: 16px;
-      margin-bottom: 8px;
-    }
-
-    .section-content {
-      font-size: 14px;
-      line-height: 1.6;
-      color: #555;
-      margin-bottom: 12px;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
-    .action-buttons {
-      display: flex;
-      gap: 12px;
-      margin-top: 20px;
-    }
-
-    .btn {
-      flex: 1;
-      padding: 12px 16px;
-      border: none;
-      border-radius: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 14px;
-      transition: all 0.2s;
-    }
-
-    .btn-primary {
-      background: #1B5E20;
-      color: white;
-    }
-
-    .btn-primary:active {
-      background: #164620;
-    }
-
-    .btn-secondary {
-      background: #f0f7f0;
-      color: #1B5E20;
-      border: 1px solid #1B5E20;
-    }
-
-    .btn-secondary:active {
-      background: #e8f5e9;
-    }
-
-    /* CHAT SCREEN */
-    .chat-container {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      background: white;
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-    }
-
-    .chat-messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .chat-message {
-      display: flex;
-      gap: 8px;
-      animation: slideIn 0.3s ease-out;
-    }
-
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .message-user {
-      justify-content: flex-end;
-    }
-
-    .message-bubble {
-      max-width: 70%;
-      padding: 12px 16px;
-      border-radius: 16px;
-      font-size: 14px;
-      line-height: 1.4;
-      word-break: break-word;
-    }
-
-    .bubble-user {
-      background: #1B5E20;
-      color: white;
-    }
-
-    .bubble-assistant {
-      background: #f0f7f0;
-      color: #333;
-      border: 1px solid #e0e0e0;
-    }
-
-    .chat-input-area {
-      padding: 12px 16px;
-      border-top: 1px solid #e0e0e0;
-      display: flex;
-      gap: 8px;
-    }
-
-    .chat-input {
-      flex: 1;
-      border: 1px solid #ddd;
-      border-radius: 20px;
-      padding: 8px 16px;
-      font-size: 14px;
-      font-family: inherit;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .chat-input:focus {
-      border-color: #1B5E20;
-    }
-
-    .chat-send {
-      background: #1B5E20;
-      color: white;
-      border: none;
-      width: 40px;
-      height: 40px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.2s;
-    }
-
-    .chat-send:active {
-      background: #164620;
-    }
-
-    /* GARDEN SCREEN */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .stat-card {
-      background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-      border-radius: 12px;
-      padding: 16px;
-      text-align: center;
-      border: 1px solid #1B5E20;
-    }
-
-    .stat-number {
-      font-size: 28px;
-      font-weight: 700;
-      color: #1B5E20;
-      margin-bottom: 4px;
-    }
-
-    .stat-label {
-      font-size: 12px;
-      color: #2e5f35;
-      font-weight: 500;
-    }
-
-    .health-section {
-      background: white;
-      border: 1px solid #e0e0e0;
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 20px;
-    }
-
-    .health-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: #333;
-      margin-bottom: 12px;
-    }
-
-    .health-bar-bg {
-      background: #e0e0e0;
-      height: 12px;
-      border-radius: 6px;
-      overflow: hidden;
-      margin-bottom: 8px;
-    }
-
-    .health-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #1B5E20 0%, #4CAF50 100%);
-      transition: width 0.3s;
-    }
-
-    .health-text {
-      font-size: 12px;
-      color: #666;
-      text-align: right;
-    }
-
-    .plant-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .plant-item {
-      background: white;
-      border: 1px solid #e0e0e0;
-      border-radius: 12px;
-      padding: 12px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .plant-item:active {
-      background: #f9f9f9;
-      transform: translateX(4px);
-    }
-
-    .plant-icon {
-      font-size: 32px;
-    }
-
-    .plant-info {
-      flex: 1;
-    }
-
-    .plant-name {
-      font-size: 14px;
-      font-weight: 600;
-      color: #333;
-      margin-bottom: 4px;
-    }
-
-    .plant-status {
-      font-size: 12px;
-      padding: 2px 8px;
-      border-radius: 12px;
-      width: fit-content;
-      font-weight: 500;
-    }
-
-    .status-treating {
-      background: #fff3e0;
-      color: #e65100;
-    }
-
-    .status-recovered {
-      background: #e8f5e9;
-      color: #1B5E20;
-    }
-
-    /* PLANTS SCREEN */
-    .empty-state {
-      text-align: center;
-      padding: 40px 20px;
-      color: #999;
-    }
-
-    .empty-icon {
-      font-size: 48px;
-      margin-bottom: 16px;
-    }
-
-    .empty-text {
-      font-size: 14px;
-      margin-bottom: 8px;
-    }
-
-    /* PLANT DETAIL SCREEN */
-    .detail-header {
-      background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
-      color: white;
-      padding: 20px;
-      border-radius: 12px;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .detail-icon {
-      font-size: 56px;
-      margin-bottom: 8px;
-    }
-
-    .detail-name {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .detail-subtitle {
-      font-size: 12px;
-      opacity: 0.9;
-    }
-
-    .timeline {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .timeline-item {
-      display: flex;
-      gap: 12px;
-    }
-
-    .timeline-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: #1B5E20;
-      margin-top: 4px;
-      flex-shrink: 0;
-    }
-
-    .timeline-content {
-      flex: 1;
-    }
-
-    .timeline-date {
-      font-size: 12px;
-      color: #999;
-      margin-bottom: 2px;
-    }
-
-    .timeline-text {
-      font-size: 13px;
-      color: #333;
-    }
-
-    .note-input-area {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-
-    .note-input {
-      flex: 1;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 8px 12px;
-      font-size: 13px;
-      font-family: inherit;
-      outline: none;
-    }
-
-    .note-input:focus {
-      border-color: #1B5E20;
-    }
-
-    .note-btn {
-      background: #1B5E20;
-      color: white;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .note-btn:active {
-      background: #164620;
-    }
-
-    /* TIPS SCREEN */
-    .season-tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-
-    .tab-btn {
-      flex: 1;
-      padding: 10px;
-      border: 1px solid #ddd;
-      background: white;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 500;
-      transition: all 0.2s;
-    }
-
-    .tab-btn.active {
-      background: #1B5E20;
-      color: white;
-      border-color: #1B5E20;
-    }
-
-    .season-header {
-      background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
-      color: white;
-      padding: 16px;
-      border-radius: 12px;
-      margin-bottom: 16px;
-    }
-
-    .season-name {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .season-months {
-      font-size: 12px;
-      opacity: 0.9;
-    }
-
-    .tips-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .tip-card {
-      background: white;
-      border: 1px solid #e0e0e0;
-      border-radius: 12px;
-      padding: 12px;
-      font-size: 13px;
-      line-height: 1.5;
-      color: #555;
-    }
-
-    .pro-tip-box {
-      background: linear-gradient(135deg, #fff9c4 0%, #ffe082 100%);
-      border: 2px solid #fbc02d;
-      border-radius: 12px;
-      padding: 16px;
-      text-align: center;
-      font-size: 13px;
-      font-weight: 500;
-      color: #f57f17;
-    }
-
-    .pro-tip-icon {
-      font-size: 24px;
-      margin-bottom: 8px;
-    }
-
-    /* UTILITY CLASSES */
-    .back-button {
-      background: transparent;
-      border: none;
-      color: #1B5E20;
-      cursor: pointer;
-      font-size: 16px;
-      padding: 8px;
-      margin: -8px 0 0 -8px;
-      font-weight: 600;
-    }
-
-    .back-button:active {
-      opacity: 0.7;
-    }
-
-    /* SCROLLBAR */
-    .screen-container::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .screen-container::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    .screen-container::-webkit-scrollbar-thumb {
-      background: #ddd;
-      border-radius: 3px;
-    }
-
-    .chat-messages::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    .chat-messages::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    .chat-messages::-webkit-scrollbar-thumb {
-      background: #ddd;
-      border-radius: 2px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1B5E20">
+<link rel="manifest" href="./manifest.json">
+<title>ጽቡቕ ተኽሊ | Tsibuk Teklil</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#F0F7F0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.app{max-width:430px;margin:0 auto;min-height:100vh;background:linear-gradient(180deg,#F0F7F0,#E8F5E9 50%,#F5F5F0);position:relative;padding-bottom:80px}
+
+/* Header */
+.hdr{background:linear-gradient(135deg,#1B5E20,#2E7D32,#388E3C);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(27,94,32,.3)}
+.hdr-left{display:flex;align-items:center;gap:8px}
+.hdr h1{color:#fff;font-size:18px;font-weight:800}
+.hdr small{color:rgba(255,255,255,.75);font-size:10px;display:block;margin-top:1px}
+.hdr .back{background:none;border:none;color:#fff;font-size:22px;cursor:pointer;padding:4px 8px 4px 0;display:none}
+.hdr .lang{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;color:#fff;font-size:12px;font-weight:600;cursor:pointer}
+
+/* Nav */
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:#fff;border-top:1px solid #E0E0E0;display:flex;justify-content:space-around;align-items:flex-end;padding:6px 0 10px;z-index:100;box-shadow:0 -4px 16px rgba(0,0,0,.06)}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:#aaa;font-size:10px;font-weight:500;padding:4px 10px;transition:color .2s}
+.nav-item.active{color:#1B5E20;font-weight:700}
+.nav-item .ico{font-size:20px;transition:filter .2s}
+.nav-item:not(.active) .ico{filter:grayscale(1);opacity:.6}
+.nav-item.scan-btn .ico{background:linear-gradient(135deg,#1B5E20,#4CAF50);border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;margin-top:-22px;box-shadow:0 4px 16px rgba(27,94,32,.3);filter:none!important;opacity:1!important}
+
+/* Cards */
+.hero{margin:16px;background:linear-gradient(135deg,#1B5E20,#2E7D32 60%,#43A047);border-radius:24px;padding:28px 20px;color:#fff;text-align:center;box-shadow:0 8px 32px rgba(27,94,32,.3);position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;opacity:.08;background-image:radial-gradient(circle at 20% 80%,#fff 1px,transparent 1px),radial-gradient(circle at 80% 20%,#fff 1px,transparent 1px);background-size:30px 30px}
+.hero>*{position:relative;z-index:1}
+.hero h2{font-size:21px;font-weight:800;margin:6px 0 4px}
+.hero p{font-size:13px;opacity:.9;line-height:1.5}
+.hero .tag{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.2);border-radius:12px;padding:3px 10px;font-size:10px;margin-top:6px}
+.scan-btn-hero{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#1B5E20;border:none;border-radius:50px;padding:14px 32px;font-size:16px;font-weight:700;cursor:pointer;margin-top:16px;box-shadow:0 4px 16px rgba(0,0,0,.15);transition:transform .2s}
+.scan-btn-hero:active{transform:scale(.96)}
+
+/* Quick actions grid */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px;margin-top:16px}
+.qcard{background:#fff;border-radius:16px;padding:16px 14px;display:flex;flex-direction:column;gap:6px;cursor:pointer;border:2px solid transparent;box-shadow:0 2px 8px rgba(0,0,0,.04);transition:transform .2s}
+.qcard:active{transform:scale(.97)}
+.qcard .qi{font-size:26px}
+.qcard .qt{font-weight:700;font-size:13px;color:#333}
+.qcard .qs{font-size:11px;color:#888}
+
+/* Crop grid */
+.crop-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 16px;margin-top:12px}
+.crop-chip{background:#fff;border-radius:12px;padding:8px 4px;text-align:center;font-size:10px;font-weight:600;color:#555;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.crop-chip .ci{font-size:22px;margin-bottom:2px}
+
+/* Section headers */
+.sh{padding:16px 16px 4px;font-size:14px;font-weight:700;color:#333}
+.sh small{font-size:11px;color:#888;font-weight:400;display:block;margin-top:2px}
+
+/* Info banner */
+.info-banner{margin:16px;background:linear-gradient(135deg,#E8F5E9,#C8E6C9);border-radius:16px;padding:14px 16px;display:flex;gap:10px;align-items:center}
+.info-banner .ib-icon{font-size:28px}
+.info-banner .ib-title{font-size:12px;font-weight:700;color:#1B5E20}
+.info-banner .ib-text{font-size:11px;color:#2E7D32;line-height:1.4}
+
+/* Scanning overlay */
+.scan-overlay{position:fixed;inset:0;background:rgba(0,0,0,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:200}
+.scan-vf{width:240px;height:240px;border:3px solid #4CAF50;border-radius:20px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.scan-vf img{width:100%;height:100%;object-fit:cover;border-radius:17px}
+.scan-vf .placeholder{font-size:56px;opacity:.3}
+.scan-line{position:absolute;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#4CAF50,transparent);box-shadow:0 0 20px #4CAF50;transition:top .08s linear}
+.scan-corner{position:absolute;width:28px;height:28px;border-color:#4CAF50;border-style:solid;border-width:0}
+.sc-tl{top:0;left:0;border-top-width:3px;border-left-width:3px;border-top-left-radius:8px}
+.sc-tr{top:0;right:0;border-top-width:3px;border-right-width:3px;border-top-right-radius:8px}
+.sc-bl{bottom:0;left:0;border-bottom-width:3px;border-left-width:3px;border-bottom-left-radius:8px}
+.sc-br{bottom:0;right:0;border-bottom-width:3px;border-right-width:3px;border-bottom-right-radius:8px}
+.scan-overlay .label{color:#fff;font-size:13px;font-weight:600;margin-bottom:16px}
+.scan-pbar{margin-top:20px;width:180px;height:4px;border-radius:2px;background:rgba(255,255,255,.15);overflow:hidden}
+.scan-pfill{height:100%;background:#4CAF50;border-radius:2px;transition:width .08s}
+.scan-pct{color:rgba(255,255,255,.5);font-size:11px;margin-top:8px}
+
+/* Diagnosis */
+.diag{margin:16px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.08)}
+.diag-hdr{padding:20px 18px;color:#fff}
+.diag-hdr .crop-icon{font-size:34px}
+.diag-hdr h2{font-size:18px;font-weight:800;margin:6px 0 2px}
+.diag-hdr .crop-name{font-size:12px;opacity:.85}
+.sev-badge{display:inline-flex;align-items:center;gap:4px;border-radius:16px;padding:3px 10px;font-size:11px;font-weight:700}
+.conf-row{display:flex;justify-content:space-between;font-size:10px;opacity:.85;margin:12px 0 4px}
+.conf-bar{height:5px;border-radius:3px;background:rgba(255,255,255,.25);overflow:hidden}
+.conf-fill{height:100%;border-radius:3px;transition:width 1s ease-out}
+
+.diag-sec{padding:14px 18px;border-bottom:1px solid #F0F0F0}
+.diag-sec h3{font-size:13px;font-weight:700;color:#333;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.diag-sec p{font-size:13px;color:#555;line-height:1.7}
+.diag-sec .steps{font-size:13px;color:#555;line-height:1.8;white-space:pre-line}
+.diag-btns{padding:12px 18px 18px;display:flex;flex-direction:column;gap:8px}
+
+/* Buttons */
+.btn-primary{background:linear-gradient(135deg,#1B5E20,#2E7D32);color:#fff;border:none;border-radius:14px;padding:13px 20px;font-size:14px;font-weight:700;cursor:pointer;width:100%;box-shadow:0 4px 16px rgba(27,94,32,.25);transition:transform .2s}
+.btn-primary:active{transform:scale(.97)}
+.btn-outline{background:transparent;color:#1B5E20;border:2px solid #1B5E20;border-radius:14px;padding:11px 20px;font-size:13px;font-weight:700;cursor:pointer;width:100%;transition:transform .2s}
+.btn-outline:active{transform:scale(.97)}
+
+/* Chat */
+.chat-box{margin:16px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.08)}
+.chat-hdr{padding:12px 16px;border-bottom:1px solid #F0F0F0;display:flex;align-items:center;gap:10px}
+.chat-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1B5E20,#4CAF50);display:flex;align-items:center;justify-content:center;font-size:18px}
+.chat-hdr .ch-title{font-size:14px;font-weight:700;color:#333}
+.chat-hdr .ch-sub{font-size:10px;color:#4CAF50;font-weight:600}
+.chat-msgs{padding:12px 14px;max-height:350px;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
+.chat-msgs:empty::after{content:'';display:none}
+.msg{max-width:85%;padding:10px 14px;font-size:13px;line-height:1.6;animation:msgIn .3s ease-out}
+.msg-ai{background:#F0F7F0;color:#333;border-radius:16px 16px 16px 4px;align-self:flex-start}
+.msg-user{background:linear-gradient(135deg,#1B5E20,#2E7D32);color:#fff;border-radius:16px 16px 4px 16px;align-self:flex-end}
+.msg-typing{align-self:flex-start;background:#F0F7F0;border-radius:16px 16px 16px 4px;padding:10px 18px;font-size:18px;letter-spacing:4px;color:#999}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.chat-input{display:flex;gap:8px;padding:10px 14px;border-top:1px solid #F0F0F0;background:#FAFAFA}
+.chat-input input{flex:1;border:2px solid #E0E0E0;border-radius:22px;padding:10px 16px;font-size:13px;outline:none;background:#fff;transition:border-color .2s}
+.chat-input input:focus{border-color:#4CAF50}
+.chat-input button{background:linear-gradient(135deg,#1B5E20,#2E7D32);color:#fff;border:none;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;flex-shrink:0}
+
+/* Plant list */
+.plant-card{background:#fff;border-radius:16px;padding:14px;margin:0 16px 10px;box-shadow:0 2px 10px rgba(0,0,0,.05);cursor:pointer;transition:transform .2s;display:flex;align-items:center;gap:12px;border-left:4px solid transparent}
+.plant-card:active{transform:scale(.98)}
+.plant-card.treating{border-left-color:#FF9800}
+.plant-card.recovered{border-left-color:#4CAF50}
+.plant-card .pc-icon{font-size:30px}
+.plant-card .pc-info{flex:1}
+.plant-card .pc-name{font-size:14px;font-weight:700;color:#333}
+.plant-card .pc-disease{font-size:11px;color:#888;margin-top:1px}
+.plant-card .pc-date{font-size:10px;color:#bbb;margin-top:3px}
+.status-tag{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px}
+.status-tag.treating{background:#FFF3E0;color:#E65100}
+.status-tag.recovered{background:#E8F5E9;color:#2E7D32}
+
+/* Garden stats */
+.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:0 16px;margin:12px 0}
+.stat-card{border-radius:14px;padding:14px 10px;text-align:center}
+.stat-card .sv{font-size:26px;font-weight:800}
+.stat-card .sl{font-size:10px;font-weight:600;margin-top:2px}
+.health-bar-wrap{margin:0 16px 16px;background:#fff;border-radius:14px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.health-bar{height:10px;border-radius:5px;background:#F0F0F0;overflow:hidden;display:flex;margin:8px 0 4px}
+.health-bar .hb-good{background:linear-gradient(90deg,#4CAF50,#66BB6A);transition:width .5s}
+.health-bar .hb-treat{background:linear-gradient(90deg,#FF9800,#FFB74D);transition:width .5s}
+
+/* Timeline */
+.timeline{padding:0 18px 12px}
+.tl-item{display:flex;gap:10px;margin-bottom:14px;align-items:flex-start}
+.tl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.tl-text{font-size:12px;font-weight:600;color:#333}
+.tl-date{font-size:10px;color:#999}
+
+/* Season tabs */
+.season-tabs{display:flex;gap:8px;padding:0 16px;overflow-x:auto;margin:12px 0}
+.season-tab{border-radius:14px;padding:10px 16px;cursor:pointer;text-align:center;min-width:100px;flex-shrink:0;font-size:12px;font-weight:600;transition:all .2s;border:2px solid #E0E0E0;color:#666;background:#fff}
+.season-tab.active{background:linear-gradient(135deg,#1B5E20,#2E7D32);color:#fff;border-color:transparent}
+.season-tab small{display:block;font-size:9px;font-weight:400;margin-top:2px;opacity:.8}
+.tip-card{background:#fff;border-radius:14px;padding:12px 14px;margin:0 16px 8px;box-shadow:0 1px 6px rgba(0,0,0,.04);display:flex;gap:10px;align-items:flex-start;border:1px solid #E8F5E9}
+.tip-icon{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#E8F5E9,#C8E6C9);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.tip-text{font-size:12px;color:#444;line-height:1.6}
+.pro-tip{margin:12px 16px;background:linear-gradient(135deg,#E8F5E9,#C8E6C9);border-radius:16px;padding:16px}
+.pro-tip h4{font-size:13px;font-weight:700;color:#1B5E20;margin-bottom:6px}
+.pro-tip p{font-size:12px;color:#2E7D32;line-height:1.7}
+
+/* Empty state */
+.empty{text-align:center;padding:40px 28px;color:#999}
+.empty .ei{font-size:48px;margin-bottom:10px}
+.empty h3{font-size:15px;color:#666;font-weight:600}
+.empty p{font-size:12px;margin-top:4px;line-height:1.5}
+
+/* Note input */
+.note-input{display:flex;gap:8px;padding:12px 18px}
+.note-input input{flex:1;border:2px solid #E0E0E0;border-radius:14px;padding:10px 14px;font-size:13px;outline:none;background:#fff}
+.note-input input:focus{border-color:#4CAF50}
+.note-input button{background:linear-gradient(135deg,#1B5E20,#2E7D32);color:#fff;border:none;border-radius:14px;padding:0 16px;font-size:18px;cursor:pointer}
+
+/* Camera input (hidden) */
+#cam-input{display:none}
+
+/* Utilities */
+.hidden{display:none!important}
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}
+.px16{padding-left:16px;padding-right:16px}
+</style>
 </head>
 <body>
-  <div id="root"></div>
+<div class="app" id="app"></div>
+<input type="file" id="cam-input" accept="image/*" capture="environment">
 
-  <script>
-    // ============================================================
-    // ጽቡቕ ተኽሊ — Tsibuk Teklil — Healthy Plant
-    // AI-Powered Plant Health Assistant for Eritrean Farmers
-    // ============================================================
+<script>
+// ============================================================
+// ጽቡቕ ተኽሊ — Tsibuk Teklil
+// Plant Health Assistant for Eritrean Farmers
+// ============================================================
 
-    // DATA
-    const CROPS = {
-      sorghum: { nameEn: "Sorghum", nameTi: "ምሸላ", icon: "🌾", color: "#D4A843" },
-      teff: { nameEn: "Teff", nameTi: "ጣፍ", icon: "🌿", color: "#8B7355" },
-      barley: { nameEn: "Barley", nameTi: "ስገም", icon: "🌾", color: "#C4A265" },
-      wheat: { nameEn: "Wheat", nameTi: "ስርናይ", icon: "🌾", color: "#DAA520" },
-      millet: { nameEn: "Pearl Millet", nameTi: "ባጽዕ", icon: "🌾", color: "#BDB76B" },
-      tomato: { nameEn: "Tomato", nameTi: "ቲማቲም", icon: "🍅", color: "#E74C3C" },
-      pepper: { nameEn: "Pepper", nameTi: "በርበረ", icon: "🌶️", color: "#C0392B" },
-      onion: { nameEn: "Onion", nameTi: "ሽጉርቲ", icon: "🧅", color: "#E67E22" },
-      lentil: { nameEn: "Lentil", nameTi: "ብርሲን", icon: "🫘", color: "#8B6914" },
-      banana: { nameEn: "Banana", nameTi: "ሙዝ", icon: "🍌", color: "#F1C40F" },
-      citrus: { nameEn: "Citrus", nameTi: "ኣራንሺ", icon: "🍊", color: "#F39C12" },
-      papaya: { nameEn: "Papaya", nameTi: "ፓፓያ", icon: "🥭", color: "#E67E22" },
-      coffee: { nameEn: "Coffee", nameTi: "ቡን", icon: "☕", color: "#6F4E37" },
-      maize: { nameEn: "Maize", nameTi: "ዕፉን", icon: "🌽", color: "#F4D03F" },
-    };
+// --- STATE ---
+const S = {
+  screen: 'home',
+  prevScreen: null,
+  lang: 'ti',
+  scanning: false,
+  scanProg: 0,
+  scanTimer: null,
+  capturedImage: null,
+  diagnosis: null,
+  chatMsgs: [],
+  chatContext: null, // 'diagnosis' or 'general'
+  myPlants: [],
+  selectedPlantId: null,
+  season: 'kremti',
+};
 
-    const DISEASES = [
-      {
-        id: 1, crop: "sorghum", nameEn: "Leaf Blight", nameTi: "ሕማም ቈጽሊ",
-        severity: "high", confidence: 94,
-        symptomsEn: "Large reddish-brown lesions on leaves, starting from lower leaves and moving upward. Leaves may dry out completely.",
-        symptomsTi: "ኣብ ቈጽሊ ዓበይቲ ቀያሕቲ-ቡናዊ ነጠብጣብ ይርአ። ካብ ታሕተዎት ቈጽሊ ጀሚሩ ንላዕሊ ይዝርጋሕ።",
-        remedyEn: "1. Remove and burn affected leaves immediately\n2. Improve air circulation by spacing plants wider\n3. Apply wood ash around the base of plants\n4. Rotate crops next season — don't plant sorghum in the same field",
-        remedyTi: "1. ዝተጠቕዑ ቈጽሊ ኣልዒልካ ኣንድዶም\n2. ኣታኽልቲ ኣርሕቕ ኣቐምጦም ንኣየር ከም ዝኣቱ\n3. ኣብ ጸግዒ ኣታኽልቲ ሓመድ ዕንጨይቲ ግበር\n4. ዝመጽእ ወቕቲ ዝራእቲ ቀይር",
-        preventionEn: "Plant resistant varieties. Avoid overhead irrigation. Remove crop residue after harvest.",
-        preventionTi: "ተጻወርቲ ዓይነት ዝራእቲ ተጠቐም። ድሕሪ ምእካብ ዝራእቲ ተረፍ ኣጽሪ።",
-      },
-      {
-        id: 2, crop: "tomato", nameEn: "Early Blight", nameTi: "ቀዳማይ ሕማም ቈጽሊ",
-        severity: "medium", confidence: 91,
-        symptomsEn: "Dark concentric rings on lower leaves (target-like pattern). Leaves turn yellow and drop. Fruit may show dark sunken spots.",
-        symptomsTi: "ኣብ ታሕተዎት ቈጽሊ ጸልማት ዓንኬላት ይርአ። ቈጽሊ ብጫ ኮይኑ ይወድቕ።",
-        remedyEn: "1. Remove all affected leaves and dispose away from garden\n2. Spray with neem leaf solution (crush neem leaves, soak in water overnight, strain and spray)\n3. Mulch around plants to prevent soil splash\n4. Water at the base, not from above",
-        remedyTi: "1. ዝተጠቕዑ ቈጽሊ ኣልዒልካ ካብ ጀርዲን ኣርሕቖም\n2. ናይ ኒም ቈጽሊ መፍትሒ ንጸግ\n3. ኣብ ጸግዒ ኣታኽልቲ ሻሕ ግበር\n4. ማይ ኣብ ሱር ኣታኽልቲ ጥራይ ኣፍስስ",
-        preventionEn: "Stake tomato plants for air flow. Rotate tomato plots every 2-3 years. Use disease-free seedlings.",
-        preventionTi: "ንቲማቲም ደው ኣብሎ ንኣየር። ኣብ ክልተ-ሰለስተ ዓመት ቦታ ቀይር።",
-      },
-      {
-        id: 3, crop: "teff", nameEn: "Teff Rust", nameTi: "ሕማም ዝገት ጣፍ",
-        severity: "high", confidence: 88,
-        symptomsEn: "Orange-brown pustules on leaves and stems. Leaves become brittle and break easily. Reduced grain filling.",
-        symptomsTi: "ኣብ ቈጽሊን ግንድን ኣራንሾኣዊ-ቡናዊ ነጠብጣብ ይርአ። ቈጽሊ ስባር ይኸውን።",
-        remedyEn: "1. If caught early, remove affected plants to prevent spread\n2. Apply a solution of wood ash and water as foliar spray\n3. Ensure proper drainage — rust thrives in moisture\n4. After harvest, burn all crop residue in the field",
-        remedyTi: "1. ኣቐዲምካ እንተ ረኺብካዮ ዝተጠቕዑ ኣታኽልቲ ኣልዕል\n2. ሓመድ ዕንጨይቲ ምስ ማይ ሓዋዊስካ ንጸግ\n3. ጽቡቕ ናይ ማይ ምውጻእ ኣረጋግጽ\n4. ድሕሪ ዓጺድ ተረፍ ኣንድድ",
-        preventionEn: "Use resistant teff varieties. Avoid late planting. Ensure good field drainage.",
-        preventionTi: "ተጻወርቲ ዓይነት ጣፍ ተጠቐም። ኣይትድንጒ ኣብ ምዝራእ።",
-      },
-      {
-        id: 4, crop: "pepper", nameEn: "Bacterial Wilt", nameTi: "ባክተርያዊ ምጽማው",
-        severity: "critical", confidence: 96,
-        symptomsEn: "Sudden wilting of entire plant during hot part of day, even with adequate water. Stems may show brown discoloration when cut.",
-        symptomsTi: "ኣታኽልቲ ሃንደበት ይጽምው ኣብ ውዑይ ግዜ፡ ማይ እኳ እንተ ሃለወ። ግንዲ ምስ ትቘርጾ ቡናዊ ይኸውን።",
-        remedyEn: "1. Remove and destroy infected plants immediately — do NOT compost them\n2. Do not replant peppers or tomatoes in the same spot for 3-4 years\n3. Solarize the soil: cover with clear plastic for 4-6 weeks in hot season\n4. Disinfect all tools with fire or boiling water",
-        remedyTi: "1. ዝተለኽፉ ኣታኽልቲ ሽዑ ኣልዒልካ ኣጥፍኣዮም\n2. ን3-4 ዓመት ኣብ ሓደ ቦታ በርበረ ወይ ቲማቲም ኣይትዝራእ\n3. መሬት ብጹሩይ ፕላስቲክ ሸፍን ን4-6 ሰሙን\n4. ኩሉ ናውቲ ብሓዊ ወይ ፈላ ማይ ኣጽሪ",
-        preventionEn: "Use grafted seedlings on resistant rootstock. Avoid waterlogging. Practice long crop rotation.",
-        preventionTi: "ተጻወርቲ ጅማት ዝተተኽሉ ዘርኢ ተጠቐም። ማይ ከይዓቢ ተጠንቀቕ።",
-      },
-      {
-        id: 5, crop: "maize", nameEn: "Fall Armyworm", nameTi: "ሓሰኻ ዕፉን",
-        severity: "critical", confidence: 92,
-        symptomsEn: "Ragged holes in leaves with visible frass (droppings). Larvae found inside the whorl of the plant. Severe damage to ears.",
-        symptomsTi: "ኣብ ቈጽሊ ዘይስሩዕ ነዃላት ይርአ። ኣብ ውሽጢ ኣታኽልቲ ሓሰኻ ይርከብ።",
-        remedyEn: "1. Handpick larvae early morning when they're active in the whorl\n2. Apply a mixture of ash and sand directly into the whorl\n3. Crush neem seeds, soak in water, and spray on affected plants\n4. Encourage natural predators — don't kill wasps and birds in the field",
-        remedyTi: "1. ንግሆ ቀልጢፍካ ሓሰኻ ብኢድ ኣልዕል\n2. ሓመድን ሑጻን ሓዋዊስካ ኣብ ውሽጢ ኣታኽልቲ ግበር\n3. ዘርኢ ኒም ጨፍሊቕካ ምስ ማይ ንጸግ\n4. ጸላእቲ ሓሰኻ ዝኾኑ ኣዕዋፍ ኣይትቕተል",
-        preventionEn: "Plant early in the season. Intercrop with beans or cowpeas. Use pheromone traps if available.",
-        preventionTi: "ኣቐዲምካ ዝራእ። ምስ ባልዶንጓ ወይ ኣተር ሓዋዊስካ ዝራእ።",
-      },
-      {
-        id: 6, crop: "banana", nameEn: "Panama Disease", nameTi: "ሕማም ሙዝ",
-        severity: "critical", confidence: 89,
-        symptomsEn: "Yellowing of older leaves starting from margins. Leaves collapse and hang down like a skirt. Brown discoloration inside the pseudostem.",
-        symptomsTi: "ኣረጊት ቈጽሊ ካብ ጫፍ ጀሚሩ ብጫ ይኸውን። ቈጽሊ ወዲቑ ከም ቀሚሽ ይንጠልጠል።",
-        remedyEn: "1. There is no cure — remove and destroy the entire plant including roots\n2. Do NOT replant banana in the same spot for at least 5 years\n3. Disinfect all tools with 10% bleach solution\n4. Alert neighboring farmers — this disease spreads through soil and water",
-        remedyTi: "1. መድሃኒት የብሉን — ምሉእ ኣታኽልቲ ምስ ሱሩ ኣልዒልካ ኣጥፍእ\n2. ን5 ዓመት ኣብ ሓደ ቦታ ሙዝ ኣይትተኽል\n3. ኩሉ ናውቲ ኣጽሪ\n4. ንጎረባብቲ ሓበሬታ ሃብ — ብመሬትን ማይን ይመሓላለፍ",
-        preventionEn: "Use disease-free planting material. Plant resistant varieties. Maintain good drainage.",
-        preventionTi: "ጽሩይ ዘርኢ ተጠቐም። ተጻወርቲ ዓይነት ተኸል። ጽቡቕ ምውጻእ ማይ ኣረጋግጽ።",
-      },
-      {
-        id: 7, crop: "coffee", nameEn: "Coffee Berry Disease", nameTi: "ሕማም ፍረ ቡን",
-        severity: "high", confidence: 85,
-        symptomsEn: "Dark, sunken lesions on green berries. Berries turn black and mummify. Premature fruit drop.",
-        symptomsTi: "ኣብ ጥረ ቡን ጸልማት ዝጠሓለ ነጠብጣብ ይርአ። ፍረ ጸሊሙ ይነቅጽ።",
-        remedyEn: "1. Remove and destroy all mummified berries from trees and ground\n2. Prune trees to improve air circulation and light penetration\n3. Apply copper-based spray if available from agricultural office\n4. Harvest ripe berries promptly — don't leave them on the tree",
-        remedyTi: "1. ዝነቐጹ ፍረ ቡን ካብ ኦምን መሬትን ኣልዒልካ ኣጥፍእ\n2. ኣታኽልቲ ቈሪጽካ ኣየር ከም ዝኣቱ ግበር\n3. ናይ ኮፐር መድሃኒት ካብ ቤት ጽሕፈት ሕርሻ ሕተት\n4. ዝበሰለ ቡን ቀልጢፍካ ኣክብ",
-        preventionEn: "Maintain shade trees. Regular pruning. Remove wild coffee from nearby.",
-        preventionTi: "ናይ ጽላል ኦም ሓሉ። ኣዘውቲርካ ቊረጽ። ዱር ቡን ካብ ጥቓ ኣልዕል።",
-      },
-      {
-        id: 8, crop: "onion", nameEn: "Purple Blotch", nameTi: "ሕብረ-ሊላዊ ነጠብጣብ",
-        severity: "medium", confidence: 90,
-        symptomsEn: "Purple-brown lesions with concentric rings on leaves. Tips of leaves die back. Bulbs may show neck rot in storage.",
-        symptomsTi: "ኣብ ቈጽሊ ሊላዊ-ቡናዊ ነጠብጣብ ምስ ዓንኬላት ይርአ። ጫፍ ቈጽሊ ይነቅጽ።",
-        remedyEn: "1. Remove severely affected leaves\n2. Spray with a garlic-chili solution (natural fungicide)\n3. Reduce irrigation frequency — let soil dry between waterings\n4. Apply wood ash around plants",
-        remedyTi: "1. ብኸቢድ ዝተጠቕዑ ቈጽሊ ኣልዕል\n2. ናይ ቀይሕ በርበረን ሽጉርትን መፍትሒ ንጸግ\n3. ምስታይ ማይ ኣውሕድ — መሬት ይንቀጽ\n4. ሓመድ ዕንጨይቲ ኣብ ጸግዒ ኣታኽልቲ ግበር",
-        preventionEn: "Wide spacing between rows. Avoid overhead watering. Cure bulbs properly before storage.",
-        preventionTi: "ኣብ መንጎ ተርታ ሰፊሕ ቦታ ግበር። ካብ ላዕሊ ማይ ኣይትግበር።",
-      },
-    ];
+function t(ti, en) { return S.lang === 'ti' ? ti : en; }
 
-    const SEASONAL_TIPS = {
-      kremti: {
-        nameTi: "ክረምቲ", nameEn: "Kremti (Main Rainy Season)",
-        months: "June - September",
-        tips: [
-          { ti: "ናይ ፈንገስ ሕማም ክብዝሕ ይኽእል — ኣታኽልቲ ኣርሕቕ ኣቐምጦም", en: "Fungal diseases increase — space plants wider for air flow" },
-          { ti: "ማይ ከይዓቢ ጽቡቕ ምውጻእ ኣረጋግጽ", en: "Ensure good drainage to prevent waterlogging" },
-          { ti: "ሓሰኻ ዕፉን ኣብ ዝናብ ይብዝሕ — ኣዘውቲርካ ፈትሽ", en: "Fall armyworm peaks during rains — check crops regularly" },
-          { ti: "ዝበሰለ ፍረ ቀልጢፍካ ኣክብ ከይበስብስ", en: "Harvest ripe produce promptly to prevent rot" },
-        ],
-      },
-      hagay: {
-        nameTi: "ሓጋይ", nameEn: "Hagay (Dry Season)",
-        months: "October - February",
-        tips: [
-          { ti: "ማይ ብጥንቃቐ ተጠቐም — ንግሆ ወይ ምሸት ኣፍስስ", en: "Conserve water — irrigate early morning or evening" },
-          { ti: "ሻሕ ኣብ ጸግዒ ኣታኽልቲ ግበር ንሙቐት ምቊጽጻር", en: "Mulch around plants to retain moisture and regulate temperature" },
-          { ti: "ንመሬት ምድላው ግዜ — ብርባ ተሓንጢ ወይ ድዅዒ ወስኽ", en: "Good time for soil preparation — add compost or manure" },
-          { ti: "ኣታኽልቲ ናይ ጸሓይ ምንዳድ ከይሃስዮም ከላኸል", en: "Protect seedlings from sunburn with temporary shade" },
-        ],
-      },
-      azmera: {
-        nameTi: "ኣዝመራ", nameEn: "Azmera (Short Rains)",
-        months: "March - May",
-        tips: [
-          { ti: "ንክረምቲ ምድላው ግዜ — መሬት ሕረስ", en: "Prepare fields for the main season — plow and clear" },
-          { ti: "ዘርኢ ኣቐዲምካ ኣዳሉ ቅድሚ ክረምቲ", en: "Prepare seeds early before the main rains" },
-          { ti: "ቀልጢፎም ዝብስሉ ኣሕምልቲ ክዝርኡ ዝኽእሉ ግዜ", en: "Good time to plant quick-maturing vegetables" },
-          { ti: "ናይ ተባዕታይ ሓሰኻ ወጽመድ ግበር", en: "Set up pest traps before the main season" },
-        ],
-      },
-    };
+// --- DATA ---
+const CROPS = {
+  sorghum: { en:'Sorghum', ti:'ምሸላ', icon:'🌾', color:'#D4A843' },
+  teff:    { en:'Teff',    ti:'ጣፍ',  icon:'🌿', color:'#8B7355' },
+  barley:  { en:'Barley',  ti:'ስገም', icon:'🌾', color:'#C4A265' },
+  wheat:   { en:'Wheat',   ti:'ስርናይ', icon:'🌾', color:'#DAA520' },
+  millet:  { en:'Millet',  ti:'ባጽዕ', icon:'🌾', color:'#BDB76B' },
+  tomato:  { en:'Tomato',  ti:'ቲማቲም', icon:'🍅', color:'#E74C3C' },
+  pepper:  { en:'Pepper',  ti:'በርበረ', icon:'🌶️', color:'#C0392B' },
+  onion:   { en:'Onion',   ti:'ሽጉርቲ', icon:'🧅', color:'#E67E22' },
+  lentil:  { en:'Lentil',  ti:'ብርሲን', icon:'🫘', color:'#8B6914' },
+  banana:  { en:'Banana',  ti:'ሙዝ',  icon:'🍌', color:'#F1C40F' },
+  citrus:  { en:'Citrus',  ti:'ኣራንሺ', icon:'🍊', color:'#F39C12' },
+  papaya:  { en:'Papaya',  ti:'ፓፓያ', icon:'🥭', color:'#E67E22' },
+  coffee:  { en:'Coffee',  ti:'ቡን',  icon:'☕', color:'#6F4E37' },
+  maize:   { en:'Maize',   ti:'ዕፉን', icon:'🌽', color:'#F4D03F' },
+};
 
-    const severityConfig = {
-      critical: { color: "#E74C3C", bg: "#FDEDEC", labelEn: "Critical", labelTi: "ኣዝዩ ሓደገኛ", icon: "🔴" },
-      high: { color: "#E67E22", bg: "#FEF5E7", labelEn: "High", labelTi: "ልዑል", icon: "🟠" },
-      medium: { color: "#F1C40F", bg: "#FEF9E7", labelEn: "Medium", labelTi: "ማእከላይ", icon: "🟡" },
-      low: { color: "#27AE60", bg: "#EAFAF1", labelEn: "Low", labelTi: "ትሑት", icon: "🟢" },
-    };
+const DISEASES = [
+  { id:1, crop:'sorghum', en:'Leaf Blight', ti:'ሕማም ቆጽሊ', severity:'high', confidence:94,
+    sympEn:'Large reddish-brown lesions on leaves, starting from lower leaves and moving upward. Leaves may dry out completely.',
+    sympTi:'ኣብ ቆጽሊ ዓበይቲ ቀያሕቲ-ቡናዊ ነጠብጣብ ይረአ። ካብ ታሕተዎት ቆጽሊ ጀሚሩ ንላዕሊ ይዝርጋሕ።',
+    rxEn:'1. Remove and burn affected leaves immediately\n2. Improve air circulation by wider plant spacing\n3. Apply wood ash around the base of plants\n4. Rotate crops next season — avoid sorghum in the same field',
+    rxTi:'1. ዝተበላሸወ ቆጽሊ ቀንጥጦ ኣንድዶ\n2. ኣታኽልቲ ፈላሊኻ ተኸሎም ኣየር ክኣቱ\n3. ኣብ ሱር ኣታኽልቲ ሓመኹሽቲ ዕንጨይቲ ግበር\n4. ዝቕጽል ወቕቲ ዝራእቲ ቀይር',
+    prevEn:'Plant resistant varieties. Avoid overhead watering. Remove crop residue after harvest.',
+    prevTi:'ተኸላኻሊ ዓይነት ዝራእቲ ተጠቀም። ድሕሪ ዓጺድ ተረፍ ኣጽሪ።' },
+  { id:2, crop:'tomato', en:'Early Blight', ti:'ቅድመ-ሕማም ቆጽሊ', severity:'medium', confidence:91,
+    sympEn:'Dark concentric rings on lower leaves (target-like pattern). Leaves turn yellow and drop. Fruit may develop dark sunken spots.',
+    sympTi:'ኣብ ታሕተዎት ቆጽሊ ጸልማት ዓንኬላት ይረአ። ቆጽሊ ብጫ ኮይኑ ይወድቕ።',
+    rxEn:'1. Remove all affected leaves away from garden\n2. Spray with neem leaf solution (crush neem leaves, soak overnight, strain and spray)\n3. Mulch around plants to prevent soil splash\n4. Water at the base only, not from above',
+    rxTi:'1. ዝተበላሸወ ቆጽሊ ካብ ጀርዲን ኣርሕቆ\n2. ቆጽሊ ኒም ምስ ማይ ጨፍሊቕካ ንጸግ\n3. ኣብ ሱር ኣታኽልቲ ሻሕ ግበር\n4. ማይ ኣብ ሱር ጥራይ ኣፍስስ',
+    prevEn:'Stake tomato plants for air flow. Rotate plots every 2-3 years. Use disease-free seedlings.',
+    prevTi:'ቲማቲም ብዘንጊ ደው ኣብሎ። ኣብ 2-3 ዓመት ቦታ ቀይር።' },
+  { id:3, crop:'teff', en:'Teff Rust', ti:'ሕማም ዝገት ጣፍ', severity:'high', confidence:88,
+    sympEn:'Orange-brown pustules on leaves and stems. Leaves become brittle and break easily. Reduced grain filling.',
+    sympTi:'ኣብ ቆጽሊን ግንድን ኣራንሾኣዊ-ቡናዊ ነጠብጣብ ይረአ። ቆጽሊ ስባር ይኸውን።',
+    rxEn:'1. If caught early, remove affected plants to prevent spread\n2. Apply wood ash and water solution as foliar spray\n3. Ensure proper field drainage\n4. After harvest, burn all crop residue',
+    rxTi:'1. ኣቐዲምካ እንተ ረኺብካዮ ዝተጠቕዐ ኣታኽልቲ ኣልዕል\n2. ሓመኹሽቲ ዕንጨይቲ ምስ ማይ ሓዋዊስካ ንጸግ\n3. ጽቡቕ ናይ ማይ ምውጻእ ኣረጋግጽ\n4. ድሕሪ ዓጺድ ተረፍ ኣንድድ',
+    prevEn:'Use resistant teff varieties. Avoid late planting. Ensure good drainage.',
+    prevTi:'ተኸላኻሊ ዓይነት ጣፍ ተጠቀም። ኣይትደንጒ ኣብ ምዝራእ።' },
+  { id:4, crop:'pepper', en:'Bacterial Wilt', ti:'ባክተርያዊ ምጽማው', severity:'critical', confidence:96,
+    sympEn:'Sudden wilting of the entire plant even with enough water. When you cut the stem, it shows brown inside.',
+    sympTi:'ኣታኽልቲ ብሃንደበት ይጽምው ማይ እኳ እንተ ሃለዎ። ግንዲ ምስ ትቖርጾ ቡናዊ ይኸውን።',
+    rxEn:'1. Remove and destroy infected plants immediately — do NOT compost\n2. Do not replant peppers or tomatoes here for 3-4 years\n3. Cover soil with clear plastic for 4-6 weeks (solarize)\n4. Clean all tools with boiling water or fire',
+    rxTi:'1. ዝተለኽፈ ኣታኽልቲ ሽዑ ኣልዒልካ ኣጥፍኣዮ\n2. ን3-4 ዓመት ኣብዚ ቦታ በርበረ ወይ ቲማቲም ኣይትዝራእ\n3. መሬት ብጹሩይ ፕላስቲክ ን4-6 ሰሙን ሸፍን\n4. ኩሉ ናውቲ ብፈላ ማይ ወይ ሓዊ ኣጽሪ',
+    prevEn:'Use grafted seedlings on resistant rootstock. Avoid waterlogging. Practice long crop rotation.',
+    prevTi:'ተኸላኻሊ ጅማት ዘለዎ ዘርኢ ተጠቀም። ማይ ከይዓቢ ተጠንቀቕ።' },
+  { id:5, crop:'maize', en:'Fall Armyworm', ti:'ሓሰኻ ዕፉን', severity:'critical', confidence:92,
+    sympEn:'Ragged holes in leaves. Larvae and droppings found inside the whorl. Severe damage to ears.',
+    sympTi:'ኣብ ቆጽሊ ዘይስሩዕ ነቓላት ይረአ። ኣብ ውሽጢ ኣታኽልቲ ሓሰኻ ይርከብ።',
+    rxEn:'1. Handpick larvae in early morning when active\n2. Mix ash and sand, apply directly into the whorl\n3. Crush neem seeds, soak in water, spray on plants\n4. Keep birds and wasps around — they eat the larvae',
+    rxTi:'1. ንግሆ ቀልጢፍካ ሓሰኻ ብኢድ ኣልዕል\n2. ሓመኹሽትን ሑጻን ሓዋዊስካ ኣብ ውሽጢ ኣታኽልቲ ግበር\n3. ዘርኢ ኒም ጨፍሊቕካ ምስ ማይ ንጸግ\n4. ኣዕዋፍ ኣይትሰጎም — ሓሰኻ ይበልዑ',
+    prevEn:'Plant early in the season. Intercrop with beans. Use traps if available.',
+    prevTi:'ኣቐዲምካ ዝራእ። ምስ ባልዶንጓ ሓዋዊስካ ዝራእ።' },
+  { id:6, crop:'banana', en:'Panama Disease', ti:'ሕማም ፓናማ ሙዝ', severity:'critical', confidence:89,
+    sympEn:'Older leaves yellow from the edges inward. Leaves collapse and hang down. Brown discoloration inside the stem.',
+    sympTi:'ኣረጊት ቆጽሊ ካብ ጫፍ ጀሚሩ ብጫ ይኸውን። ቆጽሊ ወዲቑ ይንጠልጠል።',
+    rxEn:'1. No cure exists — remove entire plant including roots\n2. Do NOT replant banana here for at least 5 years\n3. Clean all tools with bleach\n4. Warn neighbors — it spreads through soil and water',
+    rxTi:'1. መድሃኒት የብሉን — ምሉእ ኣታኽልቲ ምስ ሱሩ ኣልዒልካ ኣጥፍእ\n2. ን5 ዓመት ኣብዚ ቦታ ሙዝ ኣይትተኸል\n3. ኩሉ ናውቲ ኣጽሪ\n4. ንጎረባብቲ ሓብሮም — ብመሬትን ማይን ይላባዕ',
+    prevEn:'Use disease-free planting material. Plant resistant varieties. Good drainage.',
+    prevTi:'ጽሩይ ዘርኢ ተጠቀም። ተኸላኻሊ ዓይነት ተኸል።' },
+  { id:7, crop:'coffee', en:'Coffee Berry Disease', ti:'ሕማም ፍረ ቡን', severity:'high', confidence:85,
+    sympEn:'Dark sunken spots on green berries. Berries turn black. Fruit drops early.',
+    sympTi:'ኣብ ጥረ ቡን ጸልማት ዝጠሓለ ነጠብጣብ ይረአ። ፍረ ጸሊሙ ይነቅጽ።',
+    rxEn:'1. Remove all mummified berries from trees and ground\n2. Prune trees for air circulation and light\n3. Ask agricultural office for copper-based spray\n4. Harvest ripe berries quickly',
+    rxTi:'1. ዝነቐጸ ፍረ ቡን ካብ ኦምን መሬትን ኣልዒልካ ኣጥፍእ\n2. ኣታኽልቲ ቆሪጽካ ኣየር ክኣቱ ግበር\n3. ካብ ቤት ጽሕፈት ሕርሻ መድሃኒት ሕተት\n4. ዝበሰለ ቡን ቀልጢፍካ ኣኽብ',
+    prevEn:'Maintain shade trees. Prune regularly. Remove wild coffee plants nearby.',
+    prevTi:'ኦም ጽላል ሓሉ። ኣዘውቲርካ ቆረጽ።' },
+  { id:8, crop:'onion', en:'Purple Blotch', ti:'ሊላዊ ነጠብጣብ', severity:'medium', confidence:90,
+    sympEn:'Purple-brown spots with rings on leaves. Leaf tips die back. Bulbs may rot in storage.',
+    sympTi:'ኣብ ቆጽሊ ሊላዊ-ቡናዊ ነጠብጣብ ምስ ዓንኬላት ይረአ። ጫፍ ቆጽሊ ይነቅጽ።',
+    rxEn:'1. Remove severely affected leaves\n2. Spray garlic-chili solution (natural fungicide)\n3. Reduce watering — let soil dry between waterings\n4. Apply wood ash around plants',
+    rxTi:'1. ብኸቢድ ዝተጠቕዐ ቆጽሊ ኣልዕል\n2. ቀይሕ በርበረን ሽጉርትን ምስ ማይ ሓዋዊስካ ንጸግ\n3. ማይ ኣውሕድ — መሬት ይንቀጽ\n4. ሓመኹሽቲ ዕንጨይቲ ኣብ ሱር ኣታኽልቲ ግበር',
+    prevEn:'Wide spacing between rows. No overhead watering. Dry bulbs well before storing.',
+    prevTi:'ኣብ መንጎ ተርታ ሰፊሕ ቦታ ግበር። ካብ ላዕሊ ማይ ኣይትግበር።' },
+];
 
-    // UTILITIES
-    const t = (ti, en, lang) => lang === "ti" ? ti : en;
+const SEV = {
+  critical:{ color:'#E74C3C', bg:'#FDEDEC', en:'Critical', ti:'ኣዝዩ ሓደገኛ', icon:'🔴' },
+  high:    { color:'#E67E22', bg:'#FEF5E7', en:'High',     ti:'ልዑል',       icon:'🟠' },
+  medium:  { color:'#F1C40F', bg:'#FEF9E7', en:'Medium',   ti:'ማእከላይ',    icon:'🟡' },
+  low:     { color:'#27AE60', bg:'#EAFAF1', en:'Low',      ti:'ትሑት',       icon:'🟢' },
+};
 
-    const generateResponse = (userMessage, context, lang) => {
-      const msg = userMessage.toLowerCase();
-      const { currentDisease, currentCrop } = context;
-      const isTi = lang === "ti";
+const SEASONS = {
+  kremti: { ti:'ክረምቲ', en:'Kremti (Main Rains)', months:'June – September', tips:[
+    { ti:'ናይ ፈንገስ ሕማም ይብዝሕ — ኣታኽልቲ ፈላሊኻ ተኸል', en:'Fungal diseases increase — space plants wider for air flow', icon:'🌧️' },
+    { ti:'ጽቡቕ ናይ ማይ ምውጻእ ኣረጋግጽ', en:'Ensure good drainage to prevent waterlogging', icon:'💧' },
+    { ti:'ሓሰኻ ኣብ ዝናብ ይብዝሕ — ኣዘውቲርካ ፈትሽ', en:'Fall armyworm peaks during rains — check crops often', icon:'🐛' },
+    { ti:'ዝበሰለ ፍረ ቀልጢፍካ ኣኽብ ከይበስብስ', en:'Harvest ripe produce promptly to prevent rot', icon:'🌾' },
+  ], proTi:'ኣብ ክረምቲ ኣዘውቲርካ ኣታኽልትኻ ፈትሽ — ሕማም ኣብ ዝናባዊ ወቕቲ ቀልጢፉ ይላባዕ። ኣብ ሰሙን ሓደ ግዜ ስእሊ ስደድ።', proEn:'During Kremti, check crops frequently — diseases spread fast in wet conditions. Scan at least once a week.' },
+  hagay: { ti:'ሓጋይ', en:'Hagay (Dry Season)', months:'October – February', tips:[
+    { ti:'ማይ ብጥንቃቐ ተጠቀም — ንግሆ ወይ ምሸት ኣፍስስ', en:'Conserve water — irrigate early morning or evening', icon:'☀️' },
+    { ti:'ሻሕ ኣብ ሱር ኣታኽልቲ ግበር ንሙቐት ምቁጽጻር', en:'Mulch around plants to keep moisture and cool soil', icon:'🌡️' },
+    { ti:'ንመሬት ምድላው ግዜ — ድኩዒ ወይ ብርባ ተሓንጢ ወስኽ', en:'Good time for soil prep — add compost or manure', icon:'🌱' },
+    { ti:'ናእሽቱ ኣታኽልቲ ካብ ጸሓይ ኣጽሊል', en:'Shade seedlings from harsh sun', icon:'🏗️' },
+  ], proTi:'ኣብ ሓጋይ ማይ ምቁጣብ ኣገዳሲ እዩ። ንግሆ ቀልጢፍካ ወይ ምሸት ኣፍስስ ንኸይነቅጽ።', proEn:'During Hagay, water conservation is key. Water early morning or evening to minimize evaporation.' },
+  azmera: { ti:'ኣዝመራ', en:'Azmera (Short Rains)', months:'March – May', tips:[
+    { ti:'ንክረምቲ ምድላው ግዜ — መሬት ሕረስ', en:'Prepare fields for the main season — plow and clear', icon:'🚜' },
+    { ti:'ዘርኢ ኣቐዲምካ ኣዳሉ ቅድሚ ክረምቲ', en:'Prepare seeds early before the main rains', icon:'🌱' },
+    { ti:'ቀልጢፎም ዝብስሉ ኣሕምልቲ ክትዝርእ ትኽእል', en:'Good time to plant quick-maturing vegetables', icon:'🥬' },
+    { ti:'ናይ ሓሰኻ ወጽመድ ኣዳሉ', en:'Set up pest traps before main season', icon:'🪤' },
+  ], proTi:'ኣዝመራ ንምድላው ዝበለጸ ግዜ እዩ — መሬት ሕረስ፣ ዘርኢ ኣዳሉ፣ ንክረምቲ ተዳሎ።', proEn:'Azmera is the best time to prepare — plow fields, organize seeds, and get ready for the main season.' },
+};
 
-      if (msg.includes("water") || msg.includes("ማይ")) {
-        return isTi
-          ? "ማይ ኣብ ጽቡቕ ግዜ ምፍሳስ ኣገዳሲ እዩ። ንግሆ ቀልጢፍካ ወይ ምሸት ድሕሪ ጸሓይ ምዕራብ ኣፍስስ። ኣብ ሱር ኣታኽልቲ ጥራይ ኣፍስስ፡ ቈጽሊ ከይጠልቅ። ሓደ ጊዜ ኣብ ሰሙን ብዙሕ ማይ ምፍሳስ ካብ ነኣሽቱ ማይ ኩሉ ግዜ ይሓይሽ።"
-          : "Watering at the right time is crucial. Water early morning or after sunset. Always water at the base of the plant, not on the leaves. One deep watering per week is better than frequent shallow watering.";
-      }
-      if (msg.includes("prevent") || msg.includes("ምክልኻል") || msg.includes("protect")) {
-        return isTi
-          ? `ን${currentCrop?.nameTi || "ኣታኽልቲ"} ንምሕላው: ዝራእቲ ቀይር ኣብ ነፍሲ ወከፍ ወቕቲ። ተጻወርቲ ዓይነት ተጠቐም።`
-          : `To protect your ${currentCrop?.nameEn || "plants"}: Rotate crops each season. Use resistant varieties when available. Proper spacing is essential for air circulation.`;
-      }
-      if (msg.includes("spread") || msg.includes("ምልሕላፍ")) {
-        return isTi
-          ? "ሕማም ናብ ካልእ ኣታኽልቲ ከይላባዕ: ዝተጠቕዑ ኣታኽልቲ ሽዑ ኣልዕል። ናውቲ ድሕሪ ምጥቃም ብፈላ ማይ ኣጽሪ።"
-          : "To prevent spreading: Remove affected plants immediately. Clean your tools with boiling water between plants.";
-      }
-      if (msg.includes("when") || msg.includes("ማዓስ") || msg.includes("time")) {
-        return isTi
-          ? "ምሕዋይ ግዜ ይወስድ። ሕክምና እንተ ጀሚርካ 1-2 ሰሙን ውሽጢ ለውጢ ክትርኢ ኣለካ።"
-          : "Recovery depends on how early you caught the problem. With proper treatment, you should see improvement within 1-2 weeks.";
-      }
-      if (msg.includes("soil") || msg.includes("መሬት")) {
-        return isTi
-          ? "ጥዕና መሬት ኣዝዩ ኣገዳሲ እዩ። ድዅዒ ወይ ብርባ ተሓንጢ ወስኽ ንመሬት ምስባሕ።"
-          : "Soil health is the foundation of everything. Add compost or aged manure to build organic matter.";
-      }
+// --- AI CHAT ENGINE ---
+function aiReply(msg, disease) {
+  const m = msg.toLowerCase();
+  const isTi = S.lang === 'ti';
+  if (m.match(/water|ማይ|irrigat|ምፍሳስ/))
+    return isTi ? 'ማይ ኣብ ጽቡቕ ግዜ ምፍሳስ ኣገዳሲ እዩ። ንግሆ ቀልጢፍካ ወይ ምሸት ድሕሪ ጸሓይ ምዕራብ ኣፍስስ። ኣብ ሱር ኣታኽልቲ ጥራይ ኣፍስስ ቆጽሊ ከይጠልቕ። ሓደ ግዜ ኣብ ሰሙን ብዙሕ ማይ ምፍሳስ ካብ ነኣሽቱ ማይ ኩሉ ግዜ ይሓይሽ።' : 'Watering at the right time is crucial. Water early morning or after sunset. Always water at the base, not on the leaves. One deep watering per week is better than frequent shallow watering — it encourages deeper root growth.';
+  if (m.match(/prevent|protect|ምክልኻል|ምሕላው/))
+    return isTi ? 'ንምክልኻል: ዝራእቲ ቀይር ኣብ ነፍሲ ወከፍ ወቕቲ። ተኸላኻሊ ዓይነት ተጠቀም። ኣብ መንጎ ኣታኽልቲ ቦታ ግበር ንኣየር። መሬት ኣይትረስዕ — ድኩዒ ወይ ብርባ ተሓንጢ ወስኽ።' : 'Rotate crops each season — never plant the same family in the same spot twice. Use resistant varieties from your local agricultural office. Proper spacing for air circulation prevents most fungal diseases. Healthy soil grows healthy plants.';
+  if (m.match(/spread|neighbor|ምልሕላፍ|ጎረባብቲ/))
+    return isTi ? 'ሕማም ናብ ካልእ ከይላባዕ: ዝተበላሸወ ኣታኽልቲ ሽዑ ኣልዕል። ናውቲ ድሕሪ ምጥቃም ብፈላ ማይ ኣጽሪ። ንጎረባብቲ ሓብሮም — ብማይን ንፋስን ይላባዕ።' : 'Remove affected plants immediately. Clean tools with boiling water between plants. Don\'t touch healthy plants after handling infected ones. Warn your neighbors — diseases can spread between farms through water and wind.';
+  if (m.match(/when|how long|time|ማዓስ|ግዜ|ክንደይ/))
+    return isTi ? 'ምሕዋይ ግዜ ይወስድ። ሕክምና እንተ ጀሚርካ ኣብ 1-2 ሰሙን ለውጢ ክትርኢ ኣለካ። ለውጢ እንተ ዘይረአኻ ካልእ ሜላ ፈትን ወይ ናብ ቤት ጽሕፈት ሕርሻ ኺድ።' : 'With proper treatment, you should see improvement in 1-2 weeks. If no change after 2 weeks, the disease may have progressed too far for that plant — but treatment still protects neighbors. Keep monitoring and scanning.';
+  if (m.match(/soil|dirt|ground|መሬት/))
+    return isTi ? 'ጥዕና መሬት ኣዝዩ ኣገዳሲ እዩ። ድኩዒ ወይ ብርባ ተሓንጢ ወስኽ። ዝራእቲ ቀይር ኣብ ነፍሲ ወከፍ ወቕቲ — ባልዶንጓ ወይ ኣተር ንመሬት ይሕግዝ። ጥዑይ መሬት ጥዑይ ኣታኽልቲ ይህብ።' : 'Soil health is the foundation. Add compost or aged manure. Rotate crops — legumes like lentils fix nitrogen and improve soil. Healthy soil means fewer diseases and stronger plants.';
+  if (disease)
+    return isTi ? 'ብዛዕባ ' + disease.ti + ' ዝያዳ ክሕግዘካ ይኽእል። ብዛዕባ ሕክምና፣ ምክልኻል፣ ወይ ካልእ ሕቶ ሕተተኒ።' : 'I can help more with ' + disease.en + '. Ask about treatment, prevention, spreading, watering, or soil care.';
+  return isTi ? 'ስእሊ ናይ ኣታኽልትኻ ስደድ ወይ ብዛዕባ ማይ ምፍሳስ፣ ምክልኻል ሕማም፣ ወይ ጥዕና መሬት ሕተተኒ።' : 'Send me a photo of your plant, or ask about watering, disease prevention, soil health, or any farming question.';
+}
 
-      if (currentDisease) {
-        return isTi
-          ? `ብዛዕባ ${currentDisease.nameTi} ዝያዳ ክሕግዘካ ይኽእል። ሕቶ ሕተተኒ።`
-          : `I can help you more with ${currentDisease.nameEn}. Ask me anything about it.`;
-      }
-      return isTi
-        ? "ስእሊ ናይ ኣታኽልትኻ ስደድ ወይ ሕቶ ሕተተኒ።"
-        : "Send me a photo or ask me about your plants!";
-    };
+// --- NAVIGATION ---
+function go(screen) {
+  S.prevScreen = S.screen;
+  S.screen = screen;
+  render();
+}
 
-    // STATE MANAGEMENT
-    let state = {
-      screen: "home",
-      lang: "ti",
-      diagnosisResult: null,
-      isScanning: false,
-      scanProgress: 0,
-      chatMessages: [
-        {
-          id: 1,
-          type: "assistant",
-          text: t(
-            "ሰላም! ኣታኽልትካ ንምሕላው ኢ ገዲስካ። ስእሊ ይድገፍ ወይ ስኳ ሕተተኒ።",
-            "Hello! I'm here to help protect your crops. Send a photo or ask me anything about plant health.",
-            "ti"
-          ),
-        },
-      ],
-      myPlants: [],
-      selectedPlantId: null,
-      currentSeason: "kremti",
-      nextChatId: 2,
-    };
+// --- CAMERA & SCAN ---
+function openCamera() {
+  document.getElementById('cam-input').click();
+}
 
-    // RENDER FUNCTION
-    function render() {
-      const app = document.getElementById("root");
-      app.innerHTML = "";
-
-      // Header
-      const header = document.createElement("div");
-      header.className = "header";
-      header.innerHTML = `
-        <div class="header-title">ጽቡቕ ተኽሊ</div>
-        <button class="lang-toggle">${state.lang === "ti" ? "EN" : "ትግርኛ"}</button>
-      `;
-      header.querySelector(".lang-toggle").addEventListener("click", () => {
-        state.lang = state.lang === "ti" ? "en" : "ti";
-        render();
-      });
-      app.appendChild(header);
-
-      // Screen Container
-      const screenContainer = document.createElement("div");
-      screenContainer.className = "screen-container";
-      const content = document.createElement("div");
-      content.className = "screen-content";
-
-      if (state.screen === "home") {
-        content.innerHTML = renderHome();
-      } else if (state.screen === "garden") {
-        content.innerHTML = renderGarden();
-      } else if (state.screen === "plants") {
-        content.innerHTML = renderPlants();
-      } else if (state.screen === "plant-detail") {
-        content.innerHTML = renderPlantDetail();
-      } else if (state.screen === "diagnosis") {
-        content.innerHTML = renderDiagnosis();
-      } else if (state.screen === "chat") {
-        content.innerHTML = renderChat();
-      } else if (state.screen === "tips") {
-        content.innerHTML = renderTips();
-      }
-
-      screenContainer.appendChild(content);
-      app.appendChild(screenContainer);
-
-      // Bottom Navigation
-      const nav = document.createElement("div");
-      nav.className = "bottom-nav";
-      nav.innerHTML = `
-        <div class="nav-item ${state.screen === "home" ? "active" : ""}">
-          <div class="nav-icon">🏠</div>
-          <div class="nav-label">${t("መዋዕል", "Home", state.lang)}</div>
-        </div>
-        <div class="nav-item ${state.screen === "garden" ? "active" : ""}">
-          <div class="nav-icon">🌱</div>
-          <div class="nav-label">${t("ጀርዲን", "Garden", state.lang)}</div>
-        </div>
-        <div class="nav-center">📱</div>
-        <div class="nav-item ${state.screen === "plants" ? "active" : ""}">
-          <div class="nav-icon">🌿</div>
-          <div class="nav-label">${t("ኣታኽልቲ", "Plants", state.lang)}</div>
-        </div>
-        <div class="nav-item ${state.screen === "tips" ? "active" : ""}">
-          <div class="nav-icon">💡</div>
-          <div class="nav-label">${t("ምክሊ", "Tips", state.lang)}</div>
-        </div>
-      `;
-
-      nav.children[0].addEventListener("click", () => {
-        state.screen = "home";
-        render();
-      });
-      nav.children[1].addEventListener("click", () => {
-        state.screen = "garden";
-        render();
-      });
-      nav.children[2].addEventListener("click", () => {
-        state.screen = "diagnosis";
-        state.isScanning = true;
-        state.scanProgress = 0;
-        render();
-        startScanning();
-      });
-      nav.children[3].addEventListener("click", () => {
-        state.screen = "plants";
-        render();
-      });
-      nav.children[4].addEventListener("click", () => {
-        state.screen = "tips";
-        render();
-      });
-
-      app.appendChild(nav);
-
-      // Scanning Overlay
-      if (state.isScanning) {
-        const overlay = document.createElement("div");
-        overlay.className = "scan-overlay";
-        overlay.innerHTML = `
-          <div class="viewfinder">
-            <div class="scan-line"></div>
-          </div>
-          <div class="scan-progress">
-            <div class="scan-percentage">${state.scanProgress}%</div>
-            <div class="scan-text">${t("ስእሊ ሰሪሕ...", "Scanning...", state.lang)}</div>
-          </div>
-        `;
-        app.appendChild(overlay);
-      }
+function startScan(imgSrc) {
+  S.capturedImage = imgSrc;
+  S.scanning = true;
+  S.scanProg = 0;
+  render();
+  S.scanTimer = setInterval(() => {
+    S.scanProg += 3;
+    const line = document.getElementById('scan-line');
+    const fill = document.getElementById('scan-pfill');
+    const pct = document.getElementById('scan-pct');
+    if (line) line.style.top = (S.scanProg % 100) + '%';
+    if (fill) fill.style.width = Math.min(S.scanProg, 100) + '%';
+    if (pct) pct.textContent = Math.min(S.scanProg, 100) + '%';
+    if (S.scanProg >= 100) {
+      clearInterval(S.scanTimer);
+      finishScan();
     }
+  }, 50);
+}
 
-    function renderHome() {
-      const cropEntries = Object.entries(CROPS);
-      const cropGrid = cropEntries
-        .map(
-          ([key, crop]) =>
-            `<div class="crop-item" data-crop="${key}">
-        <div class="crop-icon">${crop.icon}</div>
-        <div class="crop-name">${t(crop.nameTi, crop.nameEn, state.lang)}</div>
-      </div>`
-        )
-        .join("");
+function finishScan() {
+  S.scanning = false;
+  const d = DISEASES[Math.floor(Math.random() * DISEASES.length)];
+  const c = CROPS[d.crop];
+  S.diagnosis = { disease: d, crop: c };
+  S.chatContext = 'diagnosis';
+  S.chatMsgs = [{ role:'ai', text: t('ሰላም! ኣብ '+c.ti+' '+d.ti+' ረኺበ። ብዛዕባ ሕክምና ወይ ምክልኻል ሕተተኒ።', 'Hello! I found '+d.en+' on your '+c.en+'. Ask me anything about treatment or prevention.') }];
+  go('diagnosis');
+}
 
-      return `
-        <div class="hero-card">
-          <div class="hero-icon">🌱</div>
-          <div class="hero-title">${t("ጽቡቕ ተኽሊ", "Healthy Plant", state.lang)}</div>
-          <div class="hero-subtitle">${t(
-        "ንኤርትራዊ ሓርሳ",
-        "For Eritrean Farmers",
-        state.lang
-      )}</div>
-          <button class="scan-button">${t("ስእሊ ልድ", "Scan Now", state.lang)}</button>
-        </div>
+// --- PLANT TRACKING ---
+function savePlant() {
+  if (!S.diagnosis) return;
+  const p = {
+    id: Date.now(),
+    crop: S.diagnosis.crop,
+    disease: S.diagnosis.disease,
+    date: new Date().toLocaleDateString(),
+    status: 'treating',
+    timeline: [{ date: new Date().toLocaleDateString(), text: t('ሕማም ተረኺቡ','Disease detected'), sev:'high' }],
+  };
+  S.myPlants.push(p);
+  go('plants');
+}
 
-        <div class="quick-actions">
-          <div class="action-tile">
-            <div class="action-icon">🌳</div>
-            <div class="action-label">${t("ሰፈርቲ", "My Garden", state.lang)}</div>
-          </div>
-          <div class="action-tile">
-            <div class="action-icon">📅</div>
-            <div class="action-label">${t("ወቕታዊ ምክሊ", "Seasonal Tips", state.lang)}</div>
-          </div>
-          <div class="action-tile">
-            <div class="action-icon">📋</div>
-            <div class="action-label">${t("ተከታታይ ዝራእቲ", "Tracked Plants", state.lang)}</div>
-          </div>
-          <div class="action-tile">
-            <div class="action-icon">💬</div>
-            <div class="action-label">${t("ሕቶ ሕተተ", "Ask AI", state.lang)}</div>
-          </div>
-        </div>
-
-        <div class="crops-grid">${cropGrid}</div>
-
-        <div class="offline-banner">
-          ✓ ${t("ብምንም ኢንተርነት ይሰራ", "Works Offline", state.lang)}
-        </div>
-      `;
-    }
-
-    function renderGarden() {
-      const treating = state.myPlants.filter((p) => p.status === "treating").length;
-      const recovered = state.myPlants.filter((p) => p.status === "recovered").length;
-      const total = state.myPlants.length;
-      const health = total > 0 ? Math.round(((total - treating) / total) * 100) : 0;
-
-      let plantListHtml = state.myPlants
-        .map(
-          (plant) =>
-            `<div class="plant-item" data-plant-id="${plant.id}">
-        <div class="plant-icon">${CROPS[plant.crop].icon}</div>
-        <div class="plant-info">
-          <div class="plant-name">${plant.name}</div>
-          <div class="plant-status ${
-              plant.status === "treating"
-                ? "status-treating"
-                : "status-recovered"
-            }">
-            ${plant.status === "treating"
-              ? t("ሕክምና", "Treating", state.lang)
-              : t("ረኺበት", "Recovered", state.lang)
-            }
-          </div>
-        </div>
-      </div>`
-        )
-        .join("");
-
-      if (state.myPlants.length === 0) {
-        plantListHtml = `<div class="empty-state">
-        <div class="empty-icon">🌱</div>
-        <div class="empty-text">${t(
-          "ኣታኽልቲ ትከላ ታሕሳስ",
-          "No plants tracked yet",
-          state.lang
-        )}</div>
-      </div>`;
-      }
-
-      return `
-        <h2>${t("ጀርዲን", "My Garden", state.lang)}</h2>
-
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-number">${total}</div>
-            <div class="stat-label">${t("ሙሉእ", "Total", state.lang)}</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number">${treating}</div>
-            <div class="stat-label">${t("ሕክምና", "Treating", state.lang)}</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number">${recovered}</div>
-            <div class="stat-label">${t("ረኺበት", "Recovered", state.lang)}</div>
-          </div>
-        </div>
-
-        <div class="health-section">
-          <div class="health-title">${t("ጥዕና ጀርዲን", "Garden Health", state.lang)}</div>
-          <div class="health-bar-bg">
-            <div class="health-bar-fill" style="width: ${health}%"></div>
-          </div>
-          <div class="health-text">${health}%</div>
-        </div>
-
-        <div class="plant-list">
-          ${plantListHtml}
-        </div>
-      `;
-    }
-
-    function renderPlants() {
-      let html = state.myPlants
-        .map(
-          (plant) =>
-            `<div class="plant-item" data-plant-id="${plant.id}">
-        <div class="plant-icon">${CROPS[plant.crop].icon}</div>
-        <div class="plant-info">
-          <div class="plant-name">${plant.name}</div>
-          <div class="plant-status ${
-              plant.status === "treating"
-                ? "status-treating"
-                : "status-recovered"
-            }">
-            ${plant.status === "treating"
-              ? t("ሕክምና", "Treating", state.lang)
-              : t("ረኺበት", "Recovered", state.lang)
-            }
-          </div>
-        </div>
-      </div>`
-        )
-        .join("");
-
-      if (state.myPlants.length === 0) {
-        html = `<div class="empty-state">
-        <div class="empty-icon">🌿</div>
-        <div class="empty-text">${t(
-          "ኣታኽልቲ ትከላ ታሕሳስ",
-          "No plants tracked yet",
-          state.lang
-        )}</div>
-      </div>`;
-      }
-
-      return `
-        <h2>${t("ተከታታይ ዝራእቲ", "Tracked Plants", state.lang)}</h2>
-        <div class="plant-list">
-          ${html}
-        </div>
-      `;
-    }
-
-    function renderPlantDetail() {
-      const plant = state.myPlants.find((p) => p.id === state.selectedPlantId);
-      if (!plant) return `<div>${t("ኣታኽልቲ ዘይወሃበ", "Plant not found", state.lang)}</div>`;
-
-      const crop = CROPS[plant.crop];
-      const timeline = plant.timeline
-        .map(
-          (event) =>
-            `<div class="timeline-item">
-        <div class="timeline-dot"></div>
-        <div class="timeline-content">
-          <div class="timeline-date">${event.date}</div>
-          <div class="timeline-text">${event.text}</div>
-        </div>
-      </div>`
-        )
-        .join("");
-
-      return `
-        <button class="back-button" data-action="back-plant-detail">← ${t(
-        "ተመለሰ",
-        "Back",
-        state.lang
-      )}</button>
-
-        <div class="detail-header">
-          <div class="detail-icon">${crop.icon}</div>
-          <div class="detail-name">${plant.name}</div>
-          <div class="detail-subtitle">${t(crop.nameTi, crop.nameEn, state.lang)}</div>
-        </div>
-
-        <div class="health-section">
-          <div class="health-title">${t("ጥዕና ኣታኽልቲ", "Plant Health", state.lang)}</div>
-          <div class="health-bar-bg">
-            <div class="health-bar-fill" style="width: ${plant.health}%"></div>
-          </div>
-          <div class="health-text">${plant.health}%</div>
-        </div>
-
-        <div class="section-label">${t("ታሪክ", "Timeline", state.lang)}</div>
-        <div class="timeline">
-          ${timeline}
-        </div>
-
-        <div class="section-label">${t("ድሌት ወስኽ", "Add Note", state.lang)}</div>
-        <div class="note-input-area">
-          <input type="text" class="note-input" placeholder="${t(
-        "ድሌት ክትብል",
-        "Your note...",
-        state.lang
-      )}" id="note-input-${plant.id}">
-          <button class="note-btn" data-plant-id="${plant.id}">${t("ወስኽ", "Add", state.lang)}</button>
-        </div>
-      `;
-    }
-
-    function renderDiagnosis() {
-      if (!state.diagnosisResult) {
-        return `<div class="empty-state">
-        <div class="empty-icon">🔍</div>
-        <div class="empty-text">${t(
-          "ምንም ምርመራ ዘይግበር",
-          "No diagnosis yet",
-          state.lang
-        )}</div>
-      </div>`;
-      }
-
-      const { disease, crop } = state.diagnosisResult;
-      const sev = severityConfig[disease.severity];
-
-      return `
-        <button class="back-button" data-action="back-diagnosis">← ${t(
-        "ተመለሰ",
-        "Back",
-        state.lang
-      )}</button>
-
-        <div class="diagnosis-container">
-          <div class="diagnosis-icon">${crop.icon}</div>
-          <div class="diagnosis-title">${t(disease.nameTi, disease.nameEn, state.lang)}</div>
-          <div class="diagnosis-title-en">${t(disease.nameEn, disease.nameTi, state.lang)}</div>
-
-          <div class="severity-badge" style="background: ${sev.bg}; color: ${sev.color};">
-            ${sev.icon} ${t(sev.labelTi, sev.labelEn, state.lang)}
-          </div>
-
-          <div class="section-label">${t("ምስጢር", "Confidence", state.lang)}</div>
-          <div class="confidence-bar">
-            <div class="confidence-fill" style="width: ${disease.confidence}%"></div>
-          </div>
-          <div style="font-size: 12px; color: #666; margin-bottom: 16px;">${disease.confidence}%</div>
-
-          <div class="section-label">${t("ምልክታት", "Symptoms", state.lang)}</div>
-          <div class="section-content">${t(
-        disease.symptomsTi,
-        disease.symptomsEn,
-        state.lang
-      )}</div>
-
-          <div class="section-label">${t("ሕክምና", "Treatment", state.lang)}</div>
-          <div class="section-content">${t(disease.remedyTi, disease.remedyEn, state.lang)}</div>
-
-          <div class="section-label">${t("ምክልኻል", "Prevention", state.lang)}</div>
-          <div class="section-content">${t(
-        disease.preventionTi,
-        disease.preventionEn,
-        state.lang
-      )}</div>
-
-          <div class="action-buttons">
-            <button class="btn btn-primary" data-action="save-plant">${t(
-        "ጀርዲን ውሰድ",
-        "Save to Garden",
-        state.lang
-      )}</button>
-            <button class="btn btn-secondary" data-action="scan-another">${t(
-        "ካሎ ልድ",
-        "Scan Another",
-        state.lang
-      )}</button>
-          </div>
-        </div>
-      `;
-    }
-
-    function renderChat() {
-      const messagesHtml = state.chatMessages
-        .map(
-          (msg) =>
-            `<div class="chat-message ${msg.type === "user" ? "message-user" : ""}">
-        <div class="message-bubble ${msg.type === "user" ? "bubble-user" : "bubble-assistant"}">
-          ${msg.text}
-        </div>
-      </div>`
-        )
-        .join("");
-
-      return `
-        <div class="chat-container" style="margin: -16px -16px 0 -16px; height: calc(100vh - 180px); border-radius: 0; box-shadow: none;">
-          <div class="chat-messages">
-            ${messagesHtml}
-          </div>
-          <div class="chat-input-area">
-            <input type="text" class="chat-input" id="chat-input" placeholder="${t(
-        "ሕቶ ሕተተ...",
-        "Ask me...",
-        state.lang
-      )}">
-            <button class="chat-send">📤</button>
-          </div>
-        </div>
-      `;
-    }
-
-    function renderTips() {
-      const seasons = ["kremti", "hagay", "azmera"];
-      const seasonTabs = seasons
-        .map(
-          (s) =>
-            `<button class="tab-btn ${state.currentSeason === s ? "active" : ""}" data-season="${s}">
-        ${t(SEASONAL_TIPS[s].nameTi, SEASONAL_TIPS[s].nameEn, state.lang)}
-      </button>`
-        )
-        .join("");
-
-      const currentTips = SEASONAL_TIPS[state.currentSeason];
-      const tipsHtml = currentTips.tips
-        .map((tip) => `<div class="tip-card">${t(tip.ti, tip.en, state.lang)}</div>`)
-        .join("");
-
-      return `
-        <h2>${t("ወቕታዊ ምክሊ", "Seasonal Tips", state.lang)}</h2>
-
-        <div class="season-tabs">
-          ${seasonTabs}
-        </div>
-
-        <div class="season-header">
-          <div class="season-name">${t(currentTips.nameTi, currentTips.nameEn, state.lang)}</div>
-          <div class="season-months">${currentTips.months}</div>
-        </div>
-
-        <div class="tips-list">
-          ${tipsHtml}
-        </div>
-
-        <div class="pro-tip-box">
-          <div class="pro-tip-icon">⭐</div>
-          <div>${t(
-        "ጥዕና መሬት ግዜ ሰኦ ንጅብ ይሕግዝ",
-        "Healthy soil is the best investment",
-        state.lang
-      )}</div>
-        </div>
-      `;
-    }
-
-    function startScanning() {
-      const interval = setInterval(() => {
-        state.scanProgress += Math.random() * 20;
-        if (state.scanProgress >= 100) {
-          state.scanProgress = 100;
-          clearInterval(interval);
-          setTimeout(() => {
-            state.isScanning = false;
-            const disease = DISEASES[Math.floor(Math.random() * DISEASES.length)];
-            const crop = CROPS[disease.crop];
-            state.diagnosisResult = { disease, crop };
-            state.screen = "diagnosis";
-            render();
-            attachEventListeners();
-          }, 500);
-        } else {
-          render();
-        }
-      }, 400);
-    }
-
-    function attachEventListeners() {
-      // Home screen
-      document.querySelectorAll(".scan-button").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          state.screen = "diagnosis";
-          state.isScanning = true;
-          state.scanProgress = 0;
-          render();
-          startScanning();
-        });
-      });
-
-      document.querySelectorAll(".action-tile").forEach((tile, idx) => {
-        tile.addEventListener("click", () => {
-          if (idx === 0) state.screen = "garden";
-          else if (idx === 1) state.screen = "tips";
-          else if (idx === 2) state.screen = "plants";
-          else if (idx === 3) state.screen = "chat";
-          render();
-          if (state.screen === "chat") attachEventListeners();
-        });
-      });
-
-      // Garden and plants plant items
-      document.querySelectorAll(".plant-item").forEach((item) => {
-        item.addEventListener("click", () => {
-          const plantId = parseInt(item.dataset.plantId);
-          state.selectedPlantId = plantId;
-          state.screen = "plant-detail";
-          render();
-          attachEventListeners();
-        });
-      });
-
-      // Plant detail back button
-      document.querySelector("[data-action='back-plant-detail']")?.addEventListener("click", () => {
-        state.selectedPlantId = null;
-        state.screen = "plants";
-        render();
-        attachEventListeners();
-      });
-
-      // Diagnosis buttons
-      document.querySelector("[data-action='save-plant']")?.addEventListener("click", () => {
-        const { disease, crop } = state.diagnosisResult;
-        const plant = {
-          id: Date.now(),
-          crop: disease.crop,
-          name: `${t(crop.nameTi, crop.nameEn, state.lang)} (${new Date().toLocaleDateString()})`,
-          status: "treating",
-          health: 40,
-          timeline: [
-            {
-              date: new Date().toLocaleDateString(),
-              text: t(disease.nameTi, disease.nameEn, state.lang),
-            },
-          ],
-        };
-        state.myPlants.push(plant);
-        state.screen = "garden";
-        state.diagnosisResult = null;
-        render();
-        attachEventListeners();
-      });
-
-      document.querySelector("[data-action='scan-another']")?.addEventListener("click", () => {
-        state.diagnosisResult = null;
-        state.screen = "home";
-        render();
-        attachEventListeners();
-      });
-
-      document.querySelector("[data-action='back-diagnosis']")?.addEventListener("click", () => {
-        state.diagnosisResult = null;
-        state.screen = "home";
-        render();
-        attachEventListeners();
-      });
-
-      // Chat
-      const chatInput = document.getElementById("chat-input");
-      const chatSend = document.querySelector(".chat-send");
-      if (chatInput && chatSend) {
-        const sendMessage = () => {
-          const text = chatInput.value.trim();
-          if (!text) return;
-          state.chatMessages.push({
-            id: state.nextChatId++,
-            type: "user",
-            text,
-          });
-          const response = generateResponse(text, {
-            currentDisease: state.diagnosisResult?.disease,
-            currentCrop: state.diagnosisResult?.crop,
-          }, state.lang);
-          state.chatMessages.push({
-            id: state.nextChatId++,
-            type: "assistant",
-            text: response,
-          });
-          chatInput.value = "";
-          render();
-          attachEventListeners();
-          setTimeout(() => {
-            const chatMessages = document.querySelector(".chat-messages");
-            if (chatMessages) chatMessages.scrollTop = chatMessages.scrollHeight;
-          }, 0);
-        };
-        chatInput.addEventListener("keypress", (e) => {
-          if (e.key === "Enter") sendMessage();
-        });
-        chatSend.addEventListener("click", sendMessage);
-      }
-
-      // Season tabs
-      document.querySelectorAll(".tab-btn").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          state.currentSeason = btn.dataset.season;
-          render();
-          attachEventListeners();
-        });
-      });
-
-      // Plant detail notes
-      document.querySelectorAll(".note-btn").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const plantId = parseInt(btn.dataset.plantId);
-          const input = document.getElementById(`note-input-${plantId}`);
-          const note = input.value.trim();
-          if (!note) return;
-          const plant = state.myPlants.find((p) => p.id === plantId);
-          if (plant) {
-            plant.timeline.push({
-              date: new Date().toLocaleDateString(),
-              text: note,
-            });
-            input.value = "";
-            render();
-            attachEventListeners();
-          }
-        });
-      });
-    }
-
-    // INITIALIZE
+function markRecovered(id) {
+  const p = S.myPlants.find(x => x.id === id);
+  if (p) {
+    p.status = 'recovered';
+    p.timeline.push({ date: new Date().toLocaleDateString(), text: t('ተሓውዩ!','Recovered!'), sev:'low' });
     render();
-    attachEventListeners();
+  }
+}
 
-    // Service Worker
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("./sw.js").catch(() => {
-        // SW not available, app still works
-      });
-    }
-  </script>
+// --- CHAT ---
+function sendChat() {
+  const inp = document.getElementById('chat-inp');
+  if (!inp || !inp.value.trim()) return;
+  const msg = inp.value.trim();
+  inp.value = '';
+  S.chatMsgs.push({ role:'user', text: msg });
+  render();
+  // Scroll to bottom
+  setTimeout(() => {
+    const box = document.getElementById('chat-msgs');
+    if (box) box.scrollTop = box.scrollHeight;
+  }, 50);
+  // Typing indicator
+  S.chatMsgs.push({ role:'typing' });
+  render();
+  setTimeout(() => {
+    S.chatMsgs = S.chatMsgs.filter(m => m.role !== 'typing');
+    const reply = aiReply(msg, S.diagnosis ? S.diagnosis.disease : null);
+    S.chatMsgs.push({ role:'ai', text: reply });
+    render();
+    setTimeout(() => {
+      const box = document.getElementById('chat-msgs');
+      if (box) box.scrollTop = box.scrollHeight;
+    }, 50);
+  }, 800 + Math.random() * 600);
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function render() {
+  const app = document.getElementById('app');
+  let html = '';
+
+  // --- HEADER ---
+  const showBack = S.screen !== 'home';
+  html += '<div class="hdr">';
+  html += '<div class="hdr-left">';
+  if (showBack) html += '<button class="back" style="display:block" onclick="go(\'home\')">←</button>';
+  html += '<div><h1>🌱 ጽቡቕ ተኽሊ</h1><small>Tsibuk Teklil · Plant Health AI</small></div>';
+  html += '</div>';
+  html += '<button class="lang" onclick="S.lang=S.lang===\'ti\'?\'en\':\'ti\';render()">' + (S.lang==='ti'?'EN':'ትግ') + '</button>';
+  html += '</div>';
+
+  // --- SCREENS ---
+  html += '<div style="padding-bottom:20px">';
+
+  if (S.screen === 'home') html += renderHome();
+  else if (S.screen === 'diagnosis') html += renderDiagnosis();
+  else if (S.screen === 'chat') html += renderChat();
+  else if (S.screen === 'plants') html += renderPlants();
+  else if (S.screen === 'plantDetail') html += renderPlantDetail();
+  else if (S.screen === 'garden') html += renderGarden();
+  else if (S.screen === 'tips') html += renderTips();
+
+  html += '</div>';
+
+  // --- NAV ---
+  html += '<div class="nav">';
+  const navItems = [
+    { id:'home', icon:'🏠', label:t('ገዛ','Home') },
+    { id:'garden', icon:'🏡', label:t('ጀርዲን','Garden') },
+    { id:'scan', icon:'📸', label:t('ስኣል','Scan') },
+    { id:'plants', icon:'📋', label:t('ዝርዝር','Plants') },
+    { id:'tips', icon:'📅', label:t('ምኽሪ','Tips') },
+  ];
+  navItems.forEach(n => {
+    const active = S.screen === n.id ? ' active' : '';
+    const isScan = n.id === 'scan';
+    const cls = 'nav-item' + active + (isScan ? ' scan-btn' : '');
+    const onclick = isScan ? 'openCamera()' : "go('"+n.id+"')";
+    html += '<div class="'+cls+'" onclick="'+onclick+'">';
+    html += '<span class="ico">' + n.icon + '</span>';
+    html += '<span>' + n.label + '</span>';
+    html += '</div>';
+  });
+  html += '</div>';
+
+  // --- SCAN OVERLAY ---
+  if (S.scanning) {
+    html += '<div class="scan-overlay">';
+    html += '<div class="label">' + t('ኣታኽልቲ ይምርመር ኣሎ...','Analyzing plant...') + '</div>';
+    html += '<div class="scan-vf">';
+    if (S.capturedImage) html += '<img src="'+S.capturedImage+'" alt="">';
+    else html += '<span class="placeholder">🌿</span>';
+    html += '<div class="scan-line" id="scan-line" style="top:0%"></div>';
+    html += '<div class="scan-corner sc-tl"></div><div class="scan-corner sc-tr"></div>';
+    html += '<div class="scan-corner sc-bl"></div><div class="scan-corner sc-br"></div>';
+    html += '</div>';
+    html += '<div class="scan-pbar"><div class="scan-pfill" id="scan-pfill" style="width:0%"></div></div>';
+    html += '<div class="scan-pct" id="scan-pct">0%</div>';
+    html += '</div>';
+  }
+
+  app.innerHTML = html;
+}
+
+// --- SCREEN RENDERERS ---
+
+function renderHome() {
+  let h = '';
+  // Hero
+  h += '<div class="hero">';
+  h += '<div style="font-size:44px;margin-bottom:4px">🌱</div>';
+  h += '<h2>' + t('ኣታኽልትኻ ስኣል','Scan Your Plant') + '</h2>';
+  h += '<p>' + t('ስእሊ ስደድ — AI ሕማም ይፈልጥን መፍትሒ ይህብን','Take a photo — AI identifies the disease and gives you the solution') + '</p>';
+  h += '<div class="tag">⚡ ' + t('ብAI ዝሰርሕ','AI-Powered') + '</div><br>';
+  h += '<button class="scan-btn-hero" onclick="openCamera()">📸 ' + t('ሕጂ ስኣል','Scan Now') + '</button>';
+  h += '</div>';
+
+  // Quick actions
+  h += '<div class="grid2">';
+  h += qcard('🏡', t('ጀርዲነይ','My Garden'), S.myPlants.length+' '+t('ኣታኽልቲ','plants'), "go('garden')");
+  h += qcard('📅', t('ወቕታዊ ምኽሪ','Seasonal Tips'), t('ንወቕቲ ዝሰማማዕ','Season advice'), "go('tips')");
+  h += qcard('📋', t('ዝተኸታተሉ','Tracked Plants'), t('ምዕባለ ተኸታተል','Monitor progress'), "go('plants')");
+  h += qcard('💬', t('AI ሓገዝ','Ask AI'), t('ሕቶ ሕተት','Get answers'), "S.chatContext='general';S.chatMsgs=[{role:'ai',text:t('ሰላም! ብዛዕባ ሕርሻ ወይ ኣታኽልቲ ዝኾነ ሕቶ ሕተተኒ።','Hello! Ask me anything about farming or plant care.')}];go('chat')");
+  h += '</div>';
+
+  // Crops
+  h += '<div class="sh">' + t('ዝድገፉ ዝራእቲ','Supported Crops') + '<small>' + t('14 ዓይነት ዝራእቲ ኤርትራ','14 Eritrean crops with disease profiles') + '</small></div>';
+  h += '<div class="crop-grid">';
+  Object.values(CROPS).forEach(c => {
+    h += '<div class="crop-chip"><div class="ci">' + c.icon + '</div>' + (S.lang==='ti'?c.ti:c.en) + '</div>';
+  });
+  h += '</div>';
+
+  // Offline banner
+  h += '<div class="info-banner"><span class="ib-icon">📡</span><div>';
+  h += '<div class="ib-title">' + t('ኦፍላይን ይሰርሕ','Works Offline') + '</div>';
+  h += '<div class="ib-text">' + t('ኢንተርነት ኣየድልን — ኩሉ ኣብ ተለፎንካ ይሰርሕ','No internet needed — everything runs on your phone') + '</div>';
+  h += '</div></div>';
+  return h;
+}
+
+function qcard(icon, title, sub, onclick) {
+  return '<div class="qcard" onclick="'+onclick+'"><span class="qi">'+icon+'</span><span class="qt">'+title+'</span><span class="qs">'+sub+'</span></div>';
+}
+
+function renderDiagnosis() {
+  if (!S.diagnosis) return '';
+  const d = S.diagnosis.disease, c = S.diagnosis.crop, sv = SEV[d.severity];
+  let h = '';
+
+  // Diagnosis card
+  h += '<div class="diag">';
+  h += '<div class="diag-hdr" style="background:linear-gradient(135deg,'+c.color+','+c.color+'CC)">';
+  h += '<div style="display:flex;justify-content:space-between;align-items:flex-start">';
+  h += '<div><span class="crop-icon">'+c.icon+'</span>';
+  h += '<h2>'+(S.lang==='ti'?d.ti:d.en)+'</h2>';
+  h += '<span class="crop-name">'+(S.lang==='ti'?c.ti:c.en)+'</span></div>';
+  h += '<span class="sev-badge" style="background:'+sv.bg+';color:'+sv.color+'">'+sv.icon+' '+(S.lang==='ti'?sv.ti:sv.en)+'</span>';
+  h += '</div>';
+  h += '<div class="conf-row"><span>'+t('ርግጸኛነት','Confidence')+'</span><span>'+d.confidence+'%</span></div>';
+  h += '<div class="conf-bar"><div class="conf-fill" style="width:'+d.confidence+'%;background:'+(d.confidence>85?'#4CAF50':'#FFC107')+'"></div></div>';
+  h += '</div>';
+
+  h += '<div class="diag-sec"><h3>🔍 '+t('ምልክታት','Symptoms')+'</h3><p>'+(S.lang==='ti'?d.sympTi:d.sympEn)+'</p></div>';
+  h += '<div class="diag-sec"><h3>💊 '+t('ሕክምና','Treatment')+'</h3><div class="steps">'+(S.lang==='ti'?d.rxTi:d.rxEn)+'</div></div>';
+  h += '<div class="diag-sec"><h3>🛡️ '+t('ምክልኻል','Prevention')+'</h3><p>'+(S.lang==='ti'?d.prevTi:d.prevEn)+'</p></div>';
+
+  h += '<div class="diag-btns">';
+  h += '<button class="btn-primary" onclick="savePlant()">📌 '+t('ኣብ ጀርዲነይ ኣቐምጥ','Save to My Garden')+'</button>';
+  h += '<button class="btn-outline" onclick="openCamera()">📸 '+t('ካልእ ስእሊ ስኣል','Scan Another Plant')+'</button>';
+  h += '</div></div>';
+
+  // Chat below diagnosis
+  h += renderChatBox();
+  return h;
+}
+
+function renderChatBox() {
+  let h = '<div class="chat-box">';
+  h += '<div class="chat-hdr"><div class="chat-avatar">🌱</div><div>';
+  h += '<div class="ch-title">'+t('ንAI ሕተት','Ask AI')+'</div>';
+  h += '<div class="ch-sub">'+t('ብዛዕባ ሕማም ሕተት','Ask about this disease')+'</div>';
+  h += '</div></div>';
+  h += '<div class="chat-msgs" id="chat-msgs">';
+  S.chatMsgs.forEach(m => {
+    if (m.role === 'typing') h += '<div class="msg msg-typing">...</div>';
+    else if (m.role === 'ai') h += '<div class="msg msg-ai">'+esc(m.text)+'</div>';
+    else h += '<div class="msg msg-user">'+esc(m.text)+'</div>';
+  });
+  h += '</div>';
+  h += '<div class="chat-input">';
+  h += '<input id="chat-inp" placeholder="'+t('ሕቶኻ ጸሓፍ...','Type your question...')+'" onkeydown="if(event.key===\'Enter\')sendChat()">';
+  h += '<button onclick="sendChat()">➤</button>';
+  h += '</div></div>';
+  return h;
+}
+
+function renderChat() {
+  let h = '<div style="margin:16px">';
+  h += '<div class="chat-box" style="height:calc(100vh - 170px);display:flex;flex-direction:column">';
+  h += '<div class="chat-hdr"><div class="chat-avatar">🌱</div><div>';
+  h += '<div class="ch-title">'+t('ናይ ሕርሻ AI ሓገዝ','AI Farming Assistant')+'</div>';
+  h += '<div class="ch-sub">⚡ AI · '+t('ኦፍላይን','Offline')+'</div>';
+  h += '</div></div>';
+  h += '<div class="chat-msgs" id="chat-msgs" style="flex:1">';
+  S.chatMsgs.forEach(m => {
+    if (m.role === 'typing') h += '<div class="msg msg-typing">...</div>';
+    else if (m.role === 'ai') h += '<div class="msg msg-ai">'+esc(m.text)+'</div>';
+    else h += '<div class="msg msg-user">'+esc(m.text)+'</div>';
+  });
+  h += '</div>';
+  h += '<div class="chat-input">';
+  h += '<input id="chat-inp" placeholder="'+t('ሕቶኻ ጸሓፍ...','Type your question...')+'" onkeydown="if(event.key===\'Enter\')sendChat()">';
+  h += '<button onclick="sendChat()">➤</button>';
+  h += '</div></div></div>';
+  return h;
+}
+
+function renderPlants() {
+  let h = '<div class="sh">'+t('ዝተኸታተሉ ኣታኽልቲ','Tracked Plants')+'<small>'+t('ምዕባለ ኣታኽልትኻ ተኸታተል','Monitor your plants\' recovery')+'</small></div>';
+  if (S.myPlants.length === 0) {
+    h += '<div class="empty"><div class="ei">🌿</div>';
+    h += '<h3>'+t('ገና ኣታኽልቲ የልን','No plants tracked yet')+'</h3>';
+    h += '<p>'+t('ኣታኽልቲ ስኣል ንምጅማር','Scan a plant to start tracking')+'</p>';
+    h += '<button class="btn-primary" style="width:auto;display:inline-block;padding:12px 28px;margin-top:12px" onclick="openCamera()">📸 '+t('ኣታኽልቲ ስኣል','Scan a Plant')+'</button>';
+    h += '</div>';
+    return h;
+  }
+  S.myPlants.forEach(p => {
+    h += '<div class="plant-card '+p.status+'" onclick="S.selectedPlantId='+p.id+';go(\'plantDetail\')">';
+    h += '<span class="pc-icon">'+p.crop.icon+'</span>';
+    h += '<div class="pc-info"><div class="pc-name">'+(S.lang==='ti'?p.crop.ti:p.crop.en)+'</div>';
+    h += '<div class="pc-disease">'+(S.lang==='ti'?p.disease.ti:p.disease.en)+'</div>';
+    h += '<div class="pc-date">📅 '+p.date+'</div></div>';
+    h += '<span class="status-tag '+p.status+'">'+(p.status==='recovered'?'✅ '+t('ተሓውዩ','Recovered'):'⏳ '+t('ይሕከም','Treating'))+'</span>';
+    h += '</div>';
+  });
+  return h;
+}
+
+function renderPlantDetail() {
+  const p = S.myPlants.find(x => x.id === S.selectedPlantId);
+  if (!p) return '<div class="empty">Plant not found</div>';
+  let h = '';
+  h += '<div class="diag" style="margin:16px">';
+  h += '<div class="diag-hdr" style="background:linear-gradient(135deg,'+p.crop.color+','+p.crop.color+'AA)">';
+  h += '<span style="font-size:38px">'+p.crop.icon+'</span>';
+  h += '<h2>'+(S.lang==='ti'?p.crop.ti:p.crop.en)+'</h2>';
+  h += '<span class="crop-name">'+(S.lang==='ti'?p.disease.ti:p.disease.en)+' · '+p.date+'</span><br>';
+  h += '<span class="status-tag '+p.status+'" style="margin-top:8px">'+(p.status==='recovered'?'✅ '+t('ተሓውዩ','Recovered'):'⏳ '+t('ይሕከም','Treating'))+'</span>';
+  h += '</div>';
+
+  // Timeline
+  h += '<div class="diag-sec"><h3>📈 '+t('ታሪኽ','Timeline')+'</h3></div>';
+  h += '<div class="timeline">';
+  p.timeline.forEach(tl => {
+    const color = tl.sev === 'low' ? '#4CAF50' : tl.sev === 'high' ? '#E67E22' : '#F1C40F';
+    h += '<div class="tl-item"><div class="tl-dot" style="background:'+color+'"></div><div>';
+    h += '<div class="tl-text">'+esc(tl.text)+'</div>';
+    h += '<div class="tl-date">'+tl.date+'</div>';
+    h += '</div></div>';
+  });
+  h += '</div>';
+
+  // Add note
+  h += '<div class="diag-sec"><h3>📝 '+t('ማስታወሻ ወስኽ','Add Note')+'</h3></div>';
+  h += '<div class="note-input">';
+  h += '<input id="note-inp" placeholder="'+t('ሎሚ እንታይ ረኣኻ?','What did you observe today?')+'" onkeydown="if(event.key===\'Enter\')addNote('+p.id+')">';
+  h += '<button onclick="addNote('+p.id+')">+</button>';
+  h += '</div>';
+
+  // Buttons
+  h += '<div class="diag-btns">';
+  if (p.status !== 'recovered')
+    h += '<button class="btn-primary" onclick="markRecovered('+p.id+')">🎉 '+t('ተሓውዩ ምልክት ግበር','Mark as Recovered')+'</button>';
+  h += '<button class="btn-outline" onclick="openCamera()">📸 '+t('ናይ ምዕባለ ስእሊ ስኣል','Take Progress Photo')+'</button>';
+  h += '</div></div>';
+  return h;
+}
+
+function addNote(plantId) {
+  const inp = document.getElementById('note-inp');
+  if (!inp || !inp.value.trim()) return;
+  const p = S.myPlants.find(x => x.id === plantId);
+  if (p) {
+    p.timeline.push({ date: new Date().toLocaleDateString(), text: inp.value.trim(), sev: 'medium' });
+    render();
+  }
+}
+
+function renderGarden() {
+  const total = S.myPlants.length;
+  const treating = S.myPlants.filter(p => p.status==='treating').length;
+  const recovered = S.myPlants.filter(p => p.status==='recovered').length;
+  let h = '<div class="sh">🏡 '+t('ጀርዲነይ','My Garden')+'</div>';
+
+  if (total === 0) {
+    h += '<div class="empty"><div class="ei">🏡</div>';
+    h += '<h3>'+t('ጀርዲንካ ጀምር','Start Your Garden')+'</h3>';
+    h += '<p>'+t('ኣታኽልቲ ስኣል — ኣብ ጀርዲንካ ተወሲኹ ምዕባለ ትከታተል','Scan plants to add them and track health over time')+'</p>';
+    h += '<button class="btn-primary" style="width:auto;display:inline-block;padding:12px 28px;margin-top:12px" onclick="openCamera()">📸 '+t('ኣታኽልቲ ስኣል','Scan a Plant')+'</button>';
+    h += '</div>';
+    return h;
+  }
+
+  // Stats
+  h += '<div class="stats-row">';
+  h += '<div class="stat-card" style="background:#fff"><div class="sv" style="color:#333">'+total+'</div><div class="sl" style="color:#888">'+t('ጠቕላላ','Total')+'</div></div>';
+  h += '<div class="stat-card" style="background:#FFF3E0"><div class="sv" style="color:#E65100">'+treating+'</div><div class="sl" style="color:#E65100">'+t('ይሕከም','Treating')+'</div></div>';
+  h += '<div class="stat-card" style="background:#E8F5E9"><div class="sv" style="color:#2E7D32">'+recovered+'</div><div class="sl" style="color:#2E7D32">'+t('ተሓውዩ','Recovered')+'</div></div>';
+  h += '</div>';
+
+  // Health bar
+  const goodPct = total > 0 ? Math.round((recovered/total)*100) : 0;
+  const treatPct = total > 0 ? Math.round((treating/total)*100) : 0;
+  h += '<div class="health-bar-wrap">';
+  h += '<div style="font-size:13px;font-weight:700;color:#333">'+t('ጥዕና ጀርዲን','Garden Health')+'</div>';
+  h += '<div class="health-bar"><div class="hb-good" style="width:'+goodPct+'%"></div><div class="hb-treat" style="width:'+treatPct+'%"></div></div>';
+  h += '<div style="display:flex;justify-content:space-between;font-size:10px;color:#888">';
+  h += '<span>'+goodPct+'% '+t('ጥዑይ','healthy')+'</span><span>'+treatPct+'% '+t('ይሕከም','treating')+'</span>';
+  h += '</div></div>';
+
+  // Plants
+  S.myPlants.forEach(p => {
+    h += '<div class="plant-card '+p.status+'" onclick="S.selectedPlantId='+p.id+';go(\'plantDetail\')">';
+    h += '<span class="pc-icon">'+p.crop.icon+'</span>';
+    h += '<div class="pc-info"><div class="pc-name">'+(S.lang==='ti'?p.crop.ti:p.crop.en)+'</div>';
+    h += '<div class="pc-disease">'+(S.lang==='ti'?p.disease.ti:p.disease.en)+'</div></div>';
+    h += '<span class="status-tag '+p.status+'">'+(p.status==='recovered'?'✅':'⏳')+'</span>';
+    h += '</div>';
+  });
+  return h;
+}
+
+function renderTips() {
+  let h = '<div class="sh">📅 '+t('ወቕታዊ ምኽሪ','Seasonal Tips')+'<small>'+t('ንወቕቲ ዝሰማማዕ ምኽሪ','Advice for the current season')+'</small></div>';
+
+  // Season tabs
+  h += '<div class="season-tabs">';
+  Object.entries(SEASONS).forEach(([key, s]) => {
+    const active = S.season === key ? ' active' : '';
+    h += '<div class="season-tab'+active+'" onclick="S.season=\''+key+'\';render()">';
+    h += (S.lang==='ti'?s.ti:s.en) + '<small>'+s.months+'</small></div>';
+  });
+  h += '</div>';
+
+  // Tips
+  const season = SEASONS[S.season];
+  season.tips.forEach(tip => {
+    h += '<div class="tip-card"><div class="tip-icon">'+tip.icon+'</div>';
+    h += '<div class="tip-text">'+(S.lang==='ti'?tip.ti:tip.en)+'</div></div>';
+  });
+
+  // Pro tip
+  h += '<div class="pro-tip"><h4>💡 '+t('ፍሉይ ምኽሪ','Pro Tip')+'</h4>';
+  h += '<p>'+(S.lang==='ti'?season.proTi:season.proEn)+'</p></div>';
+  return h;
+}
+
+// --- UTILS ---
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+// --- CAMERA HANDLER ---
+document.getElementById('cam-input').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    startScan(ev.target.result);
+  };
+  reader.readAsDataURL(file);
+  this.value = ''; // reset so same file can be selected again
+});
+
+// --- INIT ---
+render();
+
+// Service Worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(function(){});
+}
+</script>
 </body>
 </html>
